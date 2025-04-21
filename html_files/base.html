@@ -14,16 +14,17 @@
             background-repeat: no-repeat;
             background-color: rgba(255, 255, 255, 0.5);
             background-blend-mode: lighten;
-            color: #333;
+            color: #fff !important;
             font-family: sans-serif;
             position: relative;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
         }
 
         .logo-container {
             position: absolute;
             top: 20px;
             left: 20px;
-            width: 320px; /* Менять тут размерчики. */
+            width: 320px;
             z-index: 1;
         }
 
@@ -39,15 +40,15 @@
         .text-content1 {
             margin-left: 340px;
             padding: 15px;
-            background-color: rgba(255, 255, 255, 0.5);
+            background-color: rgba(0, 0, 0, 0.6) !important;
             border-radius: 10px;
         }
 
         .text-content2 {
             margin-left: 340px;
-            margin-top: 10px; /* Менять отступ сверху */
+            margin-top: 10px;
             padding: 15px;
-            background-color: rgba(255, 255, 255, 0.7);
+            background-color: rgba(0, 0, 0, 0.6) !important;
             border-radius: 10px;
         }
 
@@ -57,27 +58,11 @@
 
         .input__container {
             position: absolute;
-            top: 270px; /* Позиционируем ниже логотипа */
+            top: 270px;
             left: 20px;
             display: flex;
-            flex-direction: column; /* Изменяем на колонку */
-            gap: 10px; /* Отступ между кнопкой и полем ввода */
-        }
-
-        .shadow__input {
-            content: "";
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            left: 0;
-            bottom: 0;
-            z-index: -1;
-            background: linear-gradient(
-                45deg,
-                rgba(255, 107, 107, 0.4) 0%,
-                rgba(255, 107, 107, 0.1) 100%
-            );
-            filter: blur(20px);
+            flex-direction: column;
+            gap: 10px;
         }
 
         .input__button__shadow {
@@ -86,45 +71,32 @@
             background: #e9b50b;
             padding: 20px 50px;
             font-weight: bold;
-            font-size: 24px; /* Размер шрифта */
+            font-size: 24px;
             text-transform: uppercase;
             position: relative;
             z-index: 3;
-            border-radius: 4px; /* Скругление углов */
-            transition: background 0.3s, transform 0.2s; /* Добавляем переходы */
+            border-radius: 4px;
+            transition: background 0.3s, transform 0.2s;
+            color: #000;
         }
 
         .input__button__shadow:active {
-            background: #d8a50b; /* Цвет при нажатии */
-            transform: scale(0.95); /* Эффект уменьшения при нажатии */
-        }
-                .username-input {
-            outline: none;
-            border: 3px solid #000;
-            padding: 10px;
-            font-size: 16px;
-            background: #fff;
-            color: #000;
-            position: relative;
-            z-index: 3;
-            border-radius: 4px; /* Скругление углов */
-            box-sizing: border-box; /* Учитываем отступы и рамки в общей ширине */
+            background: #d8a50b;
+            transform: scale(0.95);
         }
 
-        /* Стили для затемненного фона */
         .dialog-overlay {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background-color: rgba(0, 0, 0, 0.5); /* Полупрозрачный черный фон */
-            backdrop-filter: blur(5px); /* Размытие фона */
-            z-index: 999; /* Уровень наложения */
-            display: none; /* По умолчанию скрыт */
+            background-color: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(5px);
+            z-index: 999;
+            display: none;
         }
 
-        /* Стили для диалогового окна */
         .dialog-box {
             position: fixed;
             top: 50%;
@@ -135,81 +107,160 @@
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
             padding: 20px;
             width: 300px;
-            height: 170px; /* Увеличиваем высоту для большего пространства */
+            height: 170px;
             z-index: 1000;
             display: none;
             border-radius: 8px;
         }
 
-        .dialog-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 10px;
-        }
-
         .close-button {
             cursor: pointer;
             font-size: 18px;
-            color: #333;
-            background: none;
-            border: 2px solid red; /* Красная рамка вокруг крестика */
-            border-radius: 50%; /* Сделать круглым */
-            padding: 5px; /* Добавить немного внутреннего отступа */
+            color: #fff !important;
+            border: 2px solid #fff;
+            border-radius: 50%;
+            padding: 5px;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         .dialog-content {
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 15px; /* Расстояние между кнопками */
+            gap: 15px;
             margin-top: 20px;
         }
 
         .dialog-option {
-            display: inline-block;
-            padding: 15px 25px; /* Увеличить размер кнопок */
-            margin: 0 5px;
+            padding: 15px 25px;
             background-color: #e9b50b;
             color: #000;
             border: none;
             border-radius: 4px;
             cursor: pointer;
             transition: background-color 0.2s;
-            font-size: 18px; /* Увеличить размер шрифта */
         }
 
         .dialog-option:hover {
             background-color: #d8a50b;
         }
 
+        .site-footer {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: #000 !important;
+            padding: 15px 20px;
+            border-top: 3px solid #e9b50b;
+            z-index: 100;
+            height: 90px;
+            display: flex;
+            align-items: center;
+        }
+
+        .footer-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            width: 100%;
+            margin: 0 auto;
+        }
+
+        .contacts {
+            display: flex;
+            align-items: center;
+            gap: 30px;
+        }
+
+        .contacts h3 {
+            margin: 0;
+            white-space: nowrap;
+            color: yellow !important;
+        }
+
+        .contact-line {
+            display: flex;
+            gap: 25px;
+            align-items: center;
+        }
+
+        .contact-phone {
+            font-family: 'Arial Black', sans-serif;
+            font-size: 18px;
+            color: #ffd700 !important;
+            margin: 0 !important;
+            white-space: nowrap;
+        }
+
+        .contact-email {
+            font-family: 'Courier New', monospace;
+            font-size: 16px;
+            color: #00ff00 !important;
+            margin: 0 !important;
+            white-space: nowrap;
+        }
+
+        .social-links a {
+            display: inline-block;
+            padding: 8px 15px;
+            background: rgba(233, 181, 11, 0.9);
+            border-radius: 5px;
+            color: #000 !important;
+            font-family: 'Arial', sans-serif;
+            font-weight: bold;
+            text-decoration: none !important;
+            transition: 0.3s;
+        }
+
+        .social-links a:hover {
+            background: #ffd700;
+            transform: scale(1.05);
+        }
+
         @media (max-width: 768px) {
             .logo-container {
-                width: 150px; /* Менять размер на мобильных устройствах */
+                width: 150px;
             }
-
             .text-content1, .text-content2 {
                 margin-left: 0;
                 padding: 10px;
+            }
+            .footer-content {
+                flex-direction: column;
+                gap: 15px;
+            }
+            .contacts {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+            .contact-line {
+                flex-direction: column;
+                gap: 10px;
+                align-items: flex-start;
+            }
+            .site-footer {
+                height: auto;
+                padding: 20px 15px;
             }
         }
     </style>
 </head>
 <body>
-
     <div class="logo-container">
         <img src="/static/logo.jpg" alt="Логотип велоклуба Сотня">
     </div>
+
     <div class="input__container">
-        <div class="shadow__input"></div>
-        <button class="input__button__shadow" id="registrationButton">
-            Регистрация
-        </button>
+        <button class="input__button__shadow" id="registrationButton">Регистрация</button>
 
-        <!-- Задний фон -->
         <div id="dialogOverlay" class="dialog-overlay" style="display: none;"></div>
-
-        <!-- Диалоговое окно -->
         <div id="dialogBox" class="dialog-box" style="display: none;">
             <div class="dialog-header">
                 <span>Выберите действие</span>
@@ -222,41 +273,53 @@
         </div>
     </div>
 
-    <script>
-        // Получаем элементы
-        const registrationButton = document.getElementById('registrationButton');
-        const dialogBox = document.getElementById('dialogBox');
-        const dialogOverlay = document.getElementById('dialogOverlay');
-        const closeDialog = document.getElementById('closeDialog');
-
-        // Обработчик клика на кнопке "Регистрация"
-        registrationButton.addEventListener('click', () => {
-            dialogOverlay.style.display = 'block'; // Показываем задний фон
-            dialogBox.style.display = 'block'; // Показываем диалоговое окно
-        });
-
-        // Обработчик клика на кнопку закрытия
-        closeDialog.addEventListener('click', () => {
-            dialogOverlay.style.display = 'none'; // Скрываем задний фон
-            dialogBox.style.display = 'none'; // Скрываем диалоговое окно
-        });
-
-        // Закрываем диалоговое окно при клике на задний фон
-        dialogOverlay.addEventListener('click', () => {
-            dialogOverlay.style.display = 'none'; // Скрываем задний фон
-            dialogBox.style.display = 'none'; // Скрываем диалоговое окно
-        });
-    </script>
-
     <div class="text-content1">
         <h1>Велоклуб "Сотня"</h1>
     </div>
+
     <div class="text-content2">
         <h2>Ближайший заезд:</h2>
         <p><strong>Дата:</strong> 20 августа 2024</p>
         <p><strong>Дистанция:</strong> 45 км</p>
         <p><strong>Маршрут:</strong> Городская площадь — Лесная тропа — Горное плато</p>
-        <p>Присоединяйтесь к нашему экстремальному заезду! Профессиональные инструкторы, полная поддержка и незабываемые впечатления гарантированы.</p>
+        <p>Присоединяйтесь к нашему экстремальному заезду!</p>
     </div>
+
+    <footer class="site-footer">
+        <div class="footer-content">
+            <div class="contacts">
+                <h3>Контакты организаторов:</h3>
+                <div class="contact-line">
+                    <p class="contact-phone">📞 +7 (999) 123-45-67</p>
+                    <p class="contact-email">📧 velo@sotnya.ru</p>
+                </div>
+            </div>
+            <div class="social-links">
+                <a href="https://vk.com/centaine" target="_blank">🔗 ВКонтакте</a>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        const registrationButton = document.getElementById('registrationButton');
+        const dialogBox = document.getElementById('dialogBox');
+        const dialogOverlay = document.getElementById('dialogOverlay');
+        const closeDialog = document.getElementById('closeDialog');
+
+        registrationButton.addEventListener('click', () => {
+            dialogOverlay.style.display = 'block';
+            dialogBox.style.display = 'block';
+        });
+
+        closeDialog.addEventListener('click', () => {
+            dialogOverlay.style.display = 'none';
+            dialogBox.style.display = 'none';
+        });
+
+        dialogOverlay.addEventListener('click', () => {
+            dialogOverlay.style.display = 'none';
+            dialogBox.style.display = 'none';
+        });
+    </script>
 </body>
 </html>
