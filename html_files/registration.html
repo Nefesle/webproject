@@ -83,7 +83,7 @@
             color: #aaa;
         }
 
-        .submit-button {
+        .submit-button{
             width: 100%;
             padding: 12px;
             font-size: 18px;
@@ -94,9 +94,31 @@
             border-radius: 5px;
             cursor: pointer;
             transition: background-color 0.3s;
+            margin-top: 10px;
         }
 
-        .submit-button:hover {
+        .home-button-container {
+            max-width: 160px;
+            display: flex;
+            justify-content: flex-end;
+        }
+
+        .home-button {
+            top: 10px;;
+            width: auto;
+            padding: 12px;
+            font-size: 18px;
+            font-weight: bold;
+            color: #000;
+            background-color: #e9b50b;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            margin-top: 10px; /* Уберите это свойство, если оно мешает */
+        }
+
+        .submit-button:hover, .home-button:hover {
             background-color: #d8a50b;
         }
 
@@ -126,9 +148,10 @@
     </style>
 </head>
 <body>
-    <!-- Блюр на фоне -->
     <div class="blur-overlay"></div>
-
+    <div class="home-button-container">
+        <a href="/" class="home-button">← На главную</a>
+    </div>
     <div class="registration-container">
         <h1>Регистрация</h1>
         <form action="/submit_registration" method="post">
