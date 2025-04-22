@@ -1,0 +1,167 @@
+<!doctype html>
+<html lang="ru">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Вход | Велоклуб "Сотня"</title>
+    <link rel="stylesheet" href="/static/styles.css">
+    <style>
+        /* Общие стили */
+        body {
+            margin: 0;
+            padding: 0;
+            background-image: url('/static/background_base.jpg');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            font-family: 'Arial', sans-serif;
+            color: #fff;
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
+        }
+
+        .blur-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: inherit;
+            background-size: inherit;
+            filter: blur(5px);
+            z-index: -1;
+        }
+
+        .login-container {
+            max-width: 400px;
+            margin: 50px auto;
+            padding: 30px;
+            background-color: rgba(0, 0, 0, 0.7);
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+            position: relative;
+            z-index: 1;
+        }
+
+        h1 {
+            text-align: center;
+            font-size: 24px;
+            margin-bottom: 20px;
+            color: #e9b50b;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 14px;
+            margin-bottom: 5px;
+            color: #e9b50b;
+            margin-right: 20px;
+            margin-left: -10px;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            background-color: rgba(255, 255, 255, 0.8);
+            transition: border-color 0.3s;
+            margin-right: 20px;
+            margin-left: -10px;
+        }
+
+        .form-group input:focus {
+            border-color: #e9b50b;
+            outline: none;
+        }
+
+        .form-group input::placeholder {
+            color: #aaa;
+        }
+
+        .submit-button {
+            width: 100%;
+            padding: 12px;
+            font-size: 18px;
+            font-weight: bold;
+            color: #000;
+            background-color: #e9b50b;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .submit-button:hover {
+            background-color: #d8a50b;
+        }
+
+        .registration-link {
+            display: block;
+            text-align: center;
+            margin-top: 15px;
+            font-size: 14px;
+            color: #e9b50b;
+            text-decoration: none;
+        }
+
+        .registration-link:hover {
+            text-decoration: underline;
+        }
+
+                .home-button-container {
+            max-width: 160px;
+            display: flex;
+            justify-content: flex-end;
+        }
+
+        .home-button {
+            top: 10px;;
+            width: auto;
+            padding: 12px;
+            font-size: 18px;
+            font-weight: bold;
+            color: #000;
+            background-color: #e9b50b;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            margin-top: 10px; /* Уберите это свойство, если оно мешает */
+        }
+    </style>
+</head>
+<body>
+    <!-- Блюр на фоне -->
+    <div class="blur-overlay"></div>
+    <div class="home-button-container">
+        <a href="/" class="home-button">← На главную</a>
+    </div>
+    <div class="login-container">
+        <h1>Вход</h1>
+        <form action="/submit_login" method="post">
+            <!-- Никнейм или Email -->
+            <div class="form-group">
+                <label for="username_or_email">Никнейм:</label>
+                <input type="text" id="username_or_email" name="username_or_email" placeholder="Введите ваш никнейм" required>
+            </div>
+
+            <!-- Пароль -->
+            <div class="form-group">
+                <label for="password">Пароль:</label>
+                <input type="password" id="password" name="password" placeholder="Введите пароль" required>
+            </div>
+
+            <!-- Кнопка отправки формы -->
+            <button type="submit" class="submit-button">Войти</button>
+        </form>
+
+        <!-- Ссылка на страницу регистрации -->
+        <a href="/registration" class="registration-link">Ещё не зарегистрированы? Зарегистрироваться</a>
+    </div>
+</body>
+</html>
