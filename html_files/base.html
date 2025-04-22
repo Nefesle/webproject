@@ -112,7 +112,41 @@
             display: none;
             border-radius: 8px;
             overflow: visible;
-            color: #000; /* Добавлено */
+            color: #000;
+        }
+
+        /* Стили для кнопки расписания */
+        .schedule-button {
+            cursor: pointer;
+            background: #e9b50b;
+            padding: 12px 25px;
+            font-weight: bold;
+            font-size: 18px;
+            border: 2px solid #000;
+            border-radius: 4px;
+            margin-left: 20px;
+            transition: background 0.3s;
+            color: #000 !important;
+            text-decoration: none !important;
+            display: inline-block;
+        }
+
+        .schedule-button:hover {
+            background: #d8a50b;
+        }
+
+        /* Модальное окно с расписанием */
+        .schedule-dialog {
+            width: 80%;
+            max-width: 800px;
+            height: auto;
+            padding: 20px;
+        }
+
+        .schedule-image {
+            width: 100%;
+            height: auto;
+            border: 2px solid #000;
         }
 
         .close-button {
@@ -146,10 +180,12 @@
             padding: 15px 25px;
             background-color: #e9b50b;
             color: #000;
+            font-size: 18px;
             border: none;
             border-radius: 4px;
             cursor: pointer;
             transition: background-color 0.2s;
+            font-weight: bold;
         }
 
         .dialog-option:hover {
@@ -168,6 +204,7 @@
             height: 90px;
             display: flex;
             align-items: center;
+            opacity: 0.9;
         }
 
         .footer-content {
@@ -256,6 +293,10 @@
                 height: auto;
                 padding: 20px 15px;
             }
+            .schedule-button {
+                margin-left: 0;
+                margin-top: 10px;
+            }
         }
     </style>
 </head>
@@ -285,11 +326,21 @@
     </div>
 
     <div class="text-content2">
-        <h2>Ближайший заезд:</h2>
-        <p><strong>Дата:</strong> 20 августа 2024</p>
-        <p><strong>Дистанция:</strong> 45 км</p>
+        <h2>Немного о нас:</h2>
+        <p><strong>Команда:</strong> Велоклуб "СОТНЯ" — это сообщество единомышленников, для которых велосипед стал не просто транспортом, а стилем жизни. Мы объединяем любителей скорости, адреналина и преодоления себя. Название "СОТНЯ" символизирует наши цели: стремление к 100% самоотдаче, заезды на 100+ километров и создание команды, где каждый участник — важная часть целого.</p>
+        <p><strong>Дистанции:</strong> 200, 300, 400 и даже 600км</p>
         <p><strong>Маршрут:</strong> Городская площадь — Лесная тропа — Горное плато</p>
-        <p>Присоединяйтесь к нашему экстремальному заезду!</p>
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+            <h3>Присоединяйтесь к нашим экстремальным заездам!</h3>
+            <button class="schedule-button" id="scheduleButton">Расписание</button>
+        </div>
+    </div>
+
+    <!-- Модальное окно расписания -->
+    <div id="scheduleOverlay" class="dialog-overlay" style="display: none;"></div>
+    <div id="scheduleDialog" class="dialog-box schedule-dialog" style="display: none;">
+        <button type="button" class="close-button" onclick="closeSchedule()">&times;</button>
+        <img src="/static/zaezd.jpg" alt="Расписание заездов" class="schedule-image">
     </div>
 
     <footer class="site-footer">
@@ -312,7 +363,11 @@
         const dialogBox = document.getElementById('dialogBox');
         const dialogOverlay = document.getElementById('dialogOverlay');
         const closeDialog = document.getElementById('closeDialog');
+        const scheduleButton = document.getElementById('scheduleButton');
+        const scheduleDialog = document.getElementById('scheduleDialog');
+        const scheduleOverlay = document.getElementById('scheduleOverlay');
 
+        // Обработчики для регистрации
         registrationButton.addEventListener('click', () => {
             dialogOverlay.style.display = 'block';
             dialogBox.style.display = 'block';
@@ -327,6 +382,19 @@
             dialogOverlay.style.display = 'none';
             dialogBox.style.display = 'none';
         });
+
+        // Обработчики для расписания
+        function closeSchedule() {
+            scheduleOverlay.style.display = 'none';
+            scheduleDialog.style.display = 'none';
+        }
+
+        scheduleButton.addEventListener('click', () => {
+            scheduleOverlay.style.display = 'block';
+            scheduleDialog.style.display = 'block';
+        });
+
+        scheduleOverlay.addEventListener('click', closeSchedule);
     </script>
 </body>
 </html>
