@@ -111,13 +111,18 @@
             z-index: 1000;
             display: none;
             border-radius: 8px;
+            overflow: visible;
+            color: #000; /* Добавлено */
         }
 
         .close-button {
+            position: absolute;
+            top: -15px;
+            right: -15px;
             cursor: pointer;
-            font-size: 18px;
-            color: #fff !important;
-            border: 2px solid #fff;
+            font-size: 20px;
+            color: red !important;
+            border: 2px solid red;
             border-radius: 50%;
             padding: 5px;
             width: 30px;
@@ -125,6 +130,8 @@
             display: flex;
             align-items: center;
             justify-content: center;
+            background: white;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
         }
 
         .dialog-content {
@@ -263,7 +270,7 @@
         <div id="dialogOverlay" class="dialog-overlay" style="display: none;"></div>
         <div id="dialogBox" class="dialog-box" style="display: none;">
             <div class="dialog-header">
-                <span>Выберите действие</span>
+                <span>Выберите действие:</span>
                 <button type="button" id="closeDialog" class="close-button">&times;</button>
             </div>
             <div class="dialog-content">
