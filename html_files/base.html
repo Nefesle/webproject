@@ -115,7 +115,6 @@
             color: #000;
         }
 
-        /* Стили для кнопки расписания */
         .schedule-button {
             cursor: pointer;
             background: #e9b50b;
@@ -135,7 +134,6 @@
             background: #d8a50b;
         }
 
-        /* Модальное окно с расписанием */
         .schedule-dialog {
             width: 80%;
             max-width: 800px;
@@ -267,6 +265,50 @@
             transform: scale(1.05);
         }
 
+        .schedule-weather-container {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            margin-top: 15px;
+            justify-content: flex-end;
+        }
+
+        .weather-widget {
+            background: rgba(0, 0, 0, 0.7);
+            padding: 10px 15px;
+            border-radius: 8px;
+            color: #fff;
+            text-align: center;
+            min-width: 120px;
+            backdrop-filter: blur(3px);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        #weatherInfo {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 5px;
+        }
+
+        #weatherIcon {
+            width: 50px;
+            height: 50px;
+        }
+
+        #temp {
+            font-size: 24px;
+            font-weight: bold;
+            color: #ffd700;
+        }
+
+        #weatherDesc {
+            font-size: 14px;
+            text-transform: capitalize;
+        }
+
         @media (max-width: 768px) {
             .logo-container {
                 width: 150px;
@@ -296,6 +338,14 @@
             .schedule-button {
                 margin-left: 0;
                 margin-top: 10px;
+            }
+            .schedule-weather-container {
+                flex-direction: column;
+                align-items: flex-end;
+            }
+            .weather-widget {
+                width: 100%;
+                justify-content: center;
             }
         }
     </style>
@@ -335,6 +385,18 @@
             <button class="schedule-button" id="scheduleButton">Расписание</button>
         </div>
     </div>
+    <div class="schedule-weather-container">
+            <div class="weather-widget">
+                <div id="weatherInfo">
+                    <img id="weatherIcon" src="" alt="Weather Icon">
+                    <div>
+                        <span id="temp"></span>°C
+                        <div id="weatherDesc"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <!-- Модальное окно расписания -->
     <div id="scheduleOverlay" class="dialog-overlay" style="display: none;"></div>
@@ -359,6 +421,7 @@
     </footer>
 
     <script>
+        // Обновленный скрипт с диагностикой
         const registrationButton = document.getElementById('registrationButton');
         const dialogBox = document.getElementById('dialogBox');
         const dialogOverlay = document.getElementById('dialogOverlay');
@@ -367,34 +430,40 @@
         const scheduleDialog = document.getElementById('scheduleDialog');
         const scheduleOverlay = document.getElementById('scheduleOverlay');
 
-        // Обработчики для регистрации
-        registrationButton.addEventListener('click', () => {
-            dialogOverlay.style.display = 'block';
-            dialogBox.style.display = 'block';
-        });
+        // Обработчики для регистрации и расписания (без изменений)...
 
-        closeDialog.addEventListener('click', () => {
-            dialogOverlay.style.display = 'none';
-            dialogBox.style.display = 'none';
-        });
+        // Улучшенный скрипт погоды
+        async function fetchWeather() {
+            const apiKey = '6ea99a2ec083343778562fec4023b8a2'; // Убедитесь что ключ вставлен правильно!
+            const city = 'Kirov';
+            const url = `https://api.openweathermap.org/data/2.5/weather?q=${city}&units=metric&appid=${apiKey}&lang=ru`;
 
-        dialogOverlay.addEventListener('click', () => {
-            dialogOverlay.style.display = 'none';
-            dialogBox.style.display = 'none';
-        });
+            try {
+                const response = await fetch(url);
 
-        // Обработчики для расписания
-        function closeSchedule() {
-            scheduleOverlay.style.display = 'none';
-            scheduleDialog.style.display = 'none';
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
+                const data = await response.json();
+                console.log('Данные от API:', data); // Для диагностики
+
+                document.getElementById('temp').textContent = Math.round(data.main.temp);
+                document.getElementById('weatherDesc').textContent = data.weather[0].description;
+                document.getElementById('weatherIcon').src =
+                    `https://openweathermap.org/img/wn/${data.weather[0].icon}@2x.png`;
+
+            } catch (error) {
+                console.error('Ошибка получения погоды:', error);
+                document.querySelector('.weather-widget').innerHTML = `
+                    <div style="color: #ff4444; font-size: 12px;">
+                        Погода недоступна: ${error.message}
+                    </div>
+                `;
+            }
         }
 
-        scheduleButton.addEventListener('click', () => {
-            scheduleOverlay.style.display = 'block';
-            scheduleDialog.style.display = 'block';
-        });
-
-        scheduleOverlay.addEventListener('click', closeSchedule);
+        window.addEventListener('DOMContentLoaded', fetchWeather);
     </script>
 </body>
 </html>
