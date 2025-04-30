@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for, flash
+from flask import Flask, render_template, request, redirect, url_for, flash, session
 from models import db, User  # Импортируем модели базы данных
 from werkzeug.security import generate_password_hash, check_password_hash
 import os
@@ -9,6 +9,7 @@ app.config['SECRET_KEY'] = 'your_secret_key'  # Для работы с flash-с�
 BASE_DIR = os.path.abspath(os.path.dirname(__file__))
 app.config['SQLALCHEMY_DATABASE_URI'] = f'sqlite:///{os.path.join(BASE_DIR, "instance", "database.db")}'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False  # Отключаем ненужные предупреждения
+app.secret_key = '30186634f3c3a296a283eade295d4264'
 
 # Настройка путей
 app.template_folder = 'html_files'  # Шаблоны находятся в html_files
@@ -35,7 +36,10 @@ with app.app_context():
 # Главная страница
 @app.route('/')
 def index():
-    return render_template('base.html')  # Используем render_template
+    print(session)
+    if 'username' in session:
+        return render_template('base.html', logged_in=True, username=session['username'])
+    return render_template('base.html', logged_in=False)  # Используем render_template
 
 
 # Страница регистрации
@@ -133,12 +137,32 @@ def login():
 
         # Проверка пароля
         if check_password_hash(user.password, password):
+            session['username'] = nick  # Сохраняем имя пользователя в сессии
             flash('Вы успешно вошли!', 'success')
             return redirect(url_for('index'))
         else:
             flash('Неверный никнейм или пароль.', 'error')
 
     return render_template('login.html')
+
+
+@app.route('/logout')
+def logout():
+    session.pop('username', None)
+    flash('Вы вышли из системы.', 'info')
+    return redirect(url_for('index'))
+
+
+@app.route('/profile')
+def profile():
+    if 'username' not in session:
+        flash('Вы должны войти в систему, чтобы просматривать профиль.', 'error')
+        return redirect(url_for('login'))
+
+    username = session['username']
+    user_data = User.nickname
+    return render_template('profile.html', username=username, nickname=user_data)
+
 
 
 if __name__ == '__main__':

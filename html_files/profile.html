@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Профиль | Велоклуб "Сотня"</title>
+</head>
+<body>
+    <header>
+        <nav>
+            <a href="/">Главная</a>
+            <a href="{{ url_for('logout') }}">Выйти</a>
+        </nav>
+    </header>
+
+    <main>
+        <h1>Профиль пользователя</h1>
+        <p><strong>Имя пользователя:</strong> {{ username }}</p>
+        <p><strong>Никнейм:</strong> {{ nickname }}</p>
+    </main>
+</body>
+</html>

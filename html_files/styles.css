@@ -146,3 +146,42 @@
     max-width: 1200px;
     margin: 0 auto;
 }
+
+.flash-messages {
+    margin-bottom: 15px;
+}
+
+.flash {
+    padding: 10px;
+    border-radius: 5px;
+}
+
+.flash.success {
+    background-color: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+}
+
+.flash.error {
+    background-color: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+}
+
+/* Стили для выпадающего списка select2 */
+.select2-container {
+    width: 100% !important; /* Устанавливаем ширину равной 100% родительского контейнера */
+}
+
+.select2-container .select2-selection--single {
+    border: 1px solid #ccc;
+    padding: 10px;
+    font-size: 16px;
+    border-radius: 5px;
+    background-color: white;
+    color: #333;
+}
+
+.select2-container--open .select2-dropdown {
+    z-index: 1000; /* Убедитесь, что выпадающее меню имеет достаточный z-index */
+}
