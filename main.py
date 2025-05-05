@@ -1,8 +1,11 @@
 from flask import Flask, render_template, request, redirect, url_for, flash, session
 from models import db, User  # Импортируем модели базы данных
 from werkzeug.security import generate_password_hash, check_password_hash
+from models import Event, Application
+from datetime import datetime
 import os
 import re
+
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'your_secret_key'  # Для работы с flash-сообщениями
@@ -37,9 +40,10 @@ with app.app_context():
 @app.route('/')
 def index():
     print(session)
+    user = None
     if 'username' in session:
-        return render_template('base.html', logged_in=True, username=session['username'])
-    return render_template('base.html', logged_in=False)  # Используем render_template
+        user = User.query.filter_by(nickname=session['username']).first()
+    return render_template('base.html', logged_in=('username' in session), user=user)
 
 
 # Страница регистрации
@@ -114,13 +118,13 @@ def registration():
 
     return render_template('registration.html')
 
-
 # Страница входа
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
         nick = request.form.get('nickname')
         password = request.form.get('password')
+        id_user = request.form.get('id')
 
         # Проверка, что данные были отправлены
         if not nick or not password:
@@ -138,7 +142,6 @@ def login():
         # Проверка пароля
         if check_password_hash(user.password, password):
             session['username'] = nick  # Сохраняем имя пользователя в сессии
-            flash('Вы успешно вошли!', 'success')
             return redirect(url_for('index'))
         else:
             flash('Неверный никнейм или пароль.', 'error')
@@ -156,12 +159,70 @@ def logout():
 @app.route('/profile')
 def profile():
     if 'username' not in session:
-        flash('Вы должны войти в систему, чтобы просматривать профиль.', 'error')
+        flash('Требуется авторизация', 'error')
         return redirect(url_for('login'))
 
-    username = session['username']
-    user_data = User.nickname
-    return render_template('profile.html', username=username, nickname=user_data)
+    # Получаем полный объект пользователя из БД
+    user = User.query.filter_by(nickname=session['username']).first()
+
+    if not user:
+        flash('Пользователь не найден', 'error')
+        return redirect(url_for('index'))
+
+    # Передаем объект user в шаблон
+    return render_template('profile.html', user=user)
+
+@app.route('/event-application', methods=['GET', 'POST'])
+def event_application():
+    if 'username' not in session:
+        flash('Требуется авторизация', 'error')
+        return redirect(url_for('login'))
+
+    user = User.query.filter_by(nickname=session['username']).first()
+    events = Event.query.all()
+
+    if request.method == 'POST':
+        event_id = request.form.get('event')
+        experience = request.form.get('experience')
+        equipment = request.form.get('equipment')
+
+        if not all([event_id, experience]):
+            flash('Заполните обязательные поля', 'error')
+            return redirect(url_for('event_application'))
+
+        new_application = Application(
+            user_id=user.id,
+            event_id=event_id,
+            experience=experience,
+            equipment=equipment
+        )
+
+        try:
+            db.session.add(new_application)
+            db.session.commit()
+            flash('Заявка успешно отправлена!', 'success')
+            return redirect(url_for('profile'))
+        except Exception as e:
+            db.session.rollback()
+            flash(f'Ошибка: {str(e)}', 'error')
+
+    return render_template('event_application.html', events=events)
+
+@app.route('/my-applications')
+def my_applications():
+    if 'username' not in session:
+        flash('Требуется авторизация', 'error')
+        return redirect(url_for('login'))
+
+    user = User.query.filter_by(nickname=session['username']).first()
+    applications = Application.query.filter_by(user_id=user.id).all()
+    return render_template('my_applications.html', applications=applications)
+
+@app.template_filter('datetimeformat')
+def format_datetime(value, format="%d.%m.%Y %H:%M"):
+    if isinstance(value, datetime):
+        return value.strftime(format)
+    return value
 
 
 
