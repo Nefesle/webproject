@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <!-- Аналогичные стили как в предыдущей форме -->
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            background-image: url('/static/background_base.jpg');
+            background-size: cover;
+            background-position: center 15%;
+            background-repeat: no-repeat;
+            background-color: rgba(255, 255, 255, 0.5);
+            background-blend-mode: lighten;
+            color: #fff !important;
+            font-family: sans-serif;
+            position: relative;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+            min-height: 100vh;
+        }
+
+        .home-button-container {
+            position: fixed;
+            top: 220px;
+            right: 20px;
+            z-index: 10;
+        }
+
+        .home-button {
+            padding: 12px 20px;
+            background: #e9b50b;
+            color: #000 !important;
+            text-decoration: none;
+            border: 2px solid #000;
+            border-radius: 4px;
+            font-weight: bold;
+            transition: background 0.3s;
+        }
+
+        .home-button:hover {
+            background: #d8a50b;
+        }
+
+        .logo-container {
+            position: absolute;
+            top: 10px;
+            left: 20px;
+            width: 320px;
+            z-index: 1;
+        }
+
+        .logo-container img {
+            width: 100%;
+            height: auto;
+            border: 2px solid #333;
+            border-radius: 5px;
+            box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
+            background-color: white;
+        }
+
+        .profile-container {
+            position: relative;
+            top: -18px;
+            left: 340px;
+            right: 20px;
+            padding: 30px;
+            background-color: rgba(0, 0, 0, 0.6);
+            border-radius: 10px;
+            z-index: 1;
+        }
+
+        .user-info {
+            padding: 20px;
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            margin-top: 15px;
+        }
+
+        .user-info p {
+            font-size: 18px;
+            margin: 15px 0;
+            color: #e9b50b;
+        }
+
+        .edit-button {
+            background: #e9b50b;
+            padding: 12px 25px;
+            border: 2px solid #000;
+            border-radius: 4px;
+            color: #000;
+            cursor: pointer;
+            margin-top: 20px;
+            font-weight: bold;
+        }
+
+        .input__container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 10;
+        }
+
+        .input__button__shadow {
+            cursor: pointer;
+            border: 3px solid #000;
+            background: #e9b50b;
+            padding: 20px 50px;
+            font-weight: bold;
+            font-size: 24px;
+            text-transform: uppercase;
+            position: relative;
+            z-index: 3;
+            border-radius: 4px;
+            transition: background 0.3s, transform 0.2s;
+            color: #000;
+        }
+
+        .input__button__shadow:active {
+            background: #d8a50b;
+            transform: scale(0.95);
+        }
+
+        /* Стили для достижений */
+        .achievements-container {
+            position: relative;
+            left: 340px;
+            margin: 20px 0;
+            padding: 30px;
+            background-color: rgba(0, 0, 0, 0.6);
+            border-radius: 10px;
+            width: calc(100% - 380px);
+        }
+
+        .achievements-list {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .achievement-item {
+            padding: 15px;
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            text-align: center;
+            font-size: 16px;
+        }
+
+        /* Позиционирование погоды */
+        .schedule-weather-container {
+            position: absolute;
+            left: 20px;
+            top: 400px;
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        /* Модальные окна */
+        .dialog-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(5px);
+            z-index: 999;
+            display: none;
+        }
+
+        .dialog-box {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: #fff;
+            border: 4px solid #000;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            width: 300px;
+            height: 170px;
+            z-index: 1000;
+            display: none;
+            border-radius: 8px;
+            overflow: visible;
+            color: #000;
+        }
+
+        .close-button {
+            position: absolute;
+            top: -15px;
+            right: -15px;
+            cursor: pointer;
+            font-size: 20px;
+            color: red !important;
+            border: 2px solid red;
+            border-radius: 50%;
+            padding: 5px;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: white;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .dialog-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .dialog-option {
+            padding: 15px 25px;
+            background-color: #e9b50b;
+            color: #000;
+            font-size: 18px;
+            border: 2px solid #000;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            font-weight: bold;
+        }
+
+        .dialog-option:hover {
+            background-color: #d8a50b;
+        }
+
+        .footer-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            width: 100%;
+            margin: 0 auto;
+        }
+
+        .application-links {
+            margin-top: 25px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .application-button {
+            padding: 12px 20px;
+            background: #e9b50b;
+            color: #000 !important;
+            text-decoration: none;
+            border: 2px solid #000;
+            border-radius: 4px;
+            font-weight: bold;
+            transition: all 0.3s;
+            text-align: center;
+        }
+
+        .application-button:hover {
+            background: #d8a50b;
+            transform: translateY(-2px);
+        }
+
+        .contacts {
+            display: flex;
+            align-items: center;
+            gap: 30px;
+        }
+
+        .contacts h3 {
+            margin: 0;
+            white-space: nowrap;
+            color: yellow !important;
+        }
+
+        .contact-line {
+            display: flex;
+            gap: 25px;
+            align-items: center;
+        }
+
+        .contact-phone {
+            font-family: 'Arial Black', sans-serif;
+            font-size: 18px;
+            color: #ffd700 !important;
+            margin: 0 !important;
+            white-space: nowrap;
+        }
+
+        .contact-email {
+            font-family: 'Courier New', monospace;
+            font-size: 16px;
+            color: #00ff00 !important;
+            margin: 0 !important;
+            white-space: nowrap;
+        }
+
+        .social-links a {
+            display: inline-block;
+            padding: 8px 15px;
+            background: rgba(233, 181, 11, 0.9);
+            border-radius: 5px;
+            color: #000 !important;
+            font-family: 'Arial', sans-serif;
+            font-weight: bold;
+            text-decoration: none !important;
+            transition: 0.3s;
+        }
+
+        .social-links a:hover {
+            background: #ffd700;
+            transform: scale(1.05);
+        }
+
+        .schedule-weather-container {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            margin-top: 25px;
+            justify-content: flex-end;
+        }
+
+        .zayvka__container {
+            position: absolute;
+            top: 265px;
+            left: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            z-index: 2;
+        }
+
+        .schedule-button {
+            cursor: pointer;
+            background: #e9b50b;
+            padding: 12px 25px;
+            font-weight: bold;
+            font-size: 18px;
+            border: 2px solid #000;
+            border-radius: 4px;
+            transition: background 0.3s;
+            color: #000;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .schedule-button:hover {
+            background: #d8a50b;
+        }
+
+        .weather-widget {
+            background: rgba(0, 0, 0, 0.7);
+            padding: 10px 15px;
+            border-radius: 8px;
+            color: #fff;
+            min-width: 140px;
+            backdrop-filter: blur(3px);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        #weatherInfo {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        #weatherIcon {
+            width: 40px;
+            height: 40px;
+        }
+
+        #temp {
+            font-size: 20px;
+            font-weight: bold;
+            color: #ffd700;
+        }
+
+        #weatherDesc {
+            font-size: 12px;
+            text-transform: capitalize;
+        }
+        .site-footer {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: #000;
+            padding: 15px 20px;
+            border-top: 3px solid #e9b50b;
+            z-index: 100;
+            height: 90px;
+            display: flex;
+            align-items: center;
+            opacity: 0.9;
+        }
+
+        .flash-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 10000;
+            max-width: 300px;
+        }
+
+        .flash-message {
+            padding: 15px 35px 15px 20px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+            position: relative;
+            animation: slideIn 0.3s ease-out;
+            opacity: 0.95;
+        }
+
+        .flash-message.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .close-flash {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            font-size: 20px;
+            color: inherit;
+        }
+
+        .dialog-box {
+            animation: modalSlideIn 0.3s ease-out;
+        }
+
+        @keyframes modalSlideIn {
+            from {
+                transform: translate(-50%, -60%);
+                opacity: 0;
+            }
+            to {
+                transform: translate(-50%, -50%);
+                opacity: 1;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .logo-container {
+                width: 150px;
+                top: 10px;
+                left: 10px;
+            }
+
+            .profile-container {
+                position: static;
+                margin: 160px 10px 0 10px;
+                left: auto;
+                right: auto;
+            }
+
+            .home-button-container {
+                position: absolute;
+                top: 305px;
+                left: 20px;
+                display: flex;
+                flex-direction: column;
+                gap: 10px;
+                z-index: 2;
+            }
+
+            .input__container {
+                top: 180px;
+                left: 10px;
+            }
+
+            .user-info p {
+                font-size: 16px;
+            }
+
+            .edit-button {
+                width: 100%;
+                padding: 10px;
+            }
+
+            .application-button {
+                width: 100%;
+                padding: 10px;
+            }
+
+            .dialog-box {
+                width: 90%;
+                height: auto;
+                padding: 15px;
+            }
+
+            .dialog-option {
+                padding: 12px 20px;
+                font-size: 16px;
+            }
+        }
+
+        .event-form {
+            max-width: 800px;
+            margin: 2rem auto;
+            padding: 2rem;
+            background: rgba(0,0,0,0.7);
+            border-radius: 10px;
+        }
+
+        .event-card {
+            margin-bottom: 1.5rem;
+            padding: 1rem;
+            background: rgba(255,255,255,0.1);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .event-card:hover {
+            background: rgba(255,255,255,0.2);
+        }
+
+        .event-date {
+            color: #e9b50b;
+            font-size: 0.9em;
+        }
+    </style>
+</head>
+<body>
+    <div class="blur-overlay"></div>
+
+    <div class="home-button-container">
+        <a href="/profile" class="home-button">← Назад в профиль</a>
+    </div>
+
+    <div class="application-container">
+        <h1>🚴 Подача заявки на мероприятие</h1>
+
+        <div class="event-form">
+            <form action="/event-application" method="post">
+                <div class="form-section">
+                    <div class="form-group">
+                        <label for="event">Выберите мероприятие:</label>
+                        <select id="event" name="event" class="form-control" required>
+                            {% for event in events %}
+                            <option value="{{ event.id }}">{{ event.name }} - {{ event.date|datetimeformat }} ({{ event.location }})</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <div class="form-group">
+                        <label for="experience">Ваш опыт участия в мероприятиях:</label>
+                        <textarea id="experience" name="experience"
+                                placeholder="Опишите ваш опыт участия в велособытиях"
+                                required></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="equipment">Используемое оборудование:</label>
+                        <input type="text" id="equipment" name="equipment"
+                            placeholder="Модель велосипеда и снаряжение">
+                    </div>
+                </div>
+
+                <button type="submit" class="submit-button">Отправить заявку</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Инициализация Select2 для выбора мероприятия
+        $(document).ready(function() {
+            $('#event').select2({
+                placeholder: "Выберите мероприятие",
+                allowClear: false,
+                width: '100%'
+            });
+        });
+    </script>
+</body>
+</html>
