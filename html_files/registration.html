@@ -107,7 +107,8 @@
         }
 
         .home-button {
-            top: 10px;;
+            text-decoration: none; /* Добавьте эту строку */
+            top: 10px;
             width: auto;
             padding: 12px;
             font-size: 18px;
@@ -118,7 +119,7 @@
             border-radius: 5px;
             cursor: pointer;
             transition: background-color 0.3s;
-            margin-top: 10px; /* Уберите это свойство, если оно мешает */
+            margin-top: 10px;
         }
 
         .submit-button:hover, .home-button:hover {
@@ -194,6 +195,7 @@
 
         .select2-container .select2-selection--single .select2-selection__rendered {
             margin-top: -10px;
+            color: black !important; /* Добавлено */
         }
 
         .select2-container--open .select2-dropdown {
@@ -203,6 +205,15 @@
             border-radius: 5px;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         }
+
+        /* Новые добавленные стили */
+        .select2-results__option {
+            color: black !important;
+        }
+
+    .select2-container--default .select2-selection--single .select2-selection__placeholder {
+        color: #666 !important;
+    }
 
         /* Изменение цвета и размера крестика */
         .select2-selection__clear {
