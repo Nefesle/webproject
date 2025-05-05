@@ -307,6 +307,44 @@
             opacity: 0.9;
         }
 
+        .flash-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 10000;
+            max-width: 300px;
+        }
+
+        .flash-message {
+            padding: 15px 35px 15px 20px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+            position: relative;
+            animation: slideIn 0.3s ease-out;
+            opacity: 0.95;
+        }
+
+        .flash-message.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .close-flash {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            font-size: 20px;
+            color: inherit;
+        }
+
+        @keyframes slideIn {
+            from { transform: translateX(100%); }
+            to { transform: translateX(0); }
+        }
+
         @media (max-width: 768px) {
             .logo-container {
                 width: 150px;
@@ -345,42 +383,34 @@
                 width: 100%;
                 justify-content: center;
             }
+
         }
     </style>
 </head>
 <body>
-    <header>
-        <nav>
-            <a href="/">Главная</a>
-            {% if logged_in %}
-                <a href="{{ url_for('profile') }}">Профиль</a>
-                <a href="{{ url_for('logout') }}">Выйти</a>
-            {% else %}
-                <a href="{{ url_for('login') }}">Войти</a>
-                <a href="{{ url_for('registration') }}">Регистрация</a>
-            {% endif %}
-        </nav>
-    </header>
-
     <div class="logo-container">
         <img src="/static/logo.jpg" alt="Логотип велоклуба Сотня">
     </div>
 
     <div class="input__container">
+        {% if logged_in %}
+        <button class="input__button__shadow" onclick="window.location.href='{{ url_for('profile') }}'">Профиль</button>
+    {% else %}
         <button class="input__button__shadow" id="registrationButton">Регистрация</button>
+    {% endif %}
 
-        <div id="dialogOverlay" class="dialog-overlay" style="display: none;"></div>
-        <div id="dialogBox" class="dialog-box" style="display: none;">
-            <div class="dialog-header">
-                <span>Выберите действие:</span>
-                <button type="button" id="closeDialog" class="close-button">&times;</button>
-            </div>
-            <div class="dialog-content">
-                <button class="dialog-option" onclick="window.location.href='/login'">Войти</button>
-                <button class="dialog-option" onclick="window.location.href='/registration'">Зарегистрироваться</button>
-            </div>
+    <div id="dialogOverlay" class="dialog-overlay" style="display: none;"></div>
+    <div id="dialogBox" class="dialog-box" style="display: none;">
+        <div class="dialog-header">
+            <span>Выберите действие:</span>
+            <button type="button" id="closeDialog" class="close-button">&times;</button>
+        </div>
+        <div class="dialog-content">
+            <button class="dialog-option" onclick="window.location.href='/login'">Войти</button>
+            <button class="dialog-option" onclick="window.location.href='/registration'">Зарегистрироваться</button>
         </div>
     </div>
+</div>
 
     <div class="text-content1">
         <h1>Велоклуб "Сотня"</h1>
@@ -471,36 +501,203 @@
 <script>
     async function fetchWeather() {
         const apiKey = '6ea99a2ec083343778562fec4023b8a2';
-        const city = 'Kirov';
-        const url = `https://api.openweathermap.org/data/2.5/weather?q=${city}&units=metric&appid=${apiKey}&lang=ru`;
+        let city;
+
+        // Словарь для перевода русских названий на английские
+        const cityTranslations = {
+    // Регионы
+    'Архангельская обл': 'Arkhangelsk Oblast',
+    'Астраханская обл': 'Astrakhan Oblast',
+    'Белгородская обл': 'Belgorod Oblast',
+    'Брянская обл': 'Bryansk Oblast',
+    'Владимирская обл': 'Vladimir Oblast',
+    'Волгоградская обл': 'Volgograd Oblast',
+    'Вологодская обл': 'Vologda Oblast',
+    'Воронежская обл': 'Voronezh Oblast',
+    'Еврейская Аобл': 'Jewish Autonomous Oblast',
+    'Ивановская обл': 'Ivanovo Oblast',
+    'Иркутская обл': 'Irkutsk Oblast',
+    'Калининградская обл': 'Kaliningrad Oblast',
+    'Калужская обл': 'Kaluga Oblast',
+    'Кемеровская область - Кузбасс': 'Kemerovo Oblast - Kuzbass',
+    'Кировская обл': 'Kirov Oblast',
+    'Костромская обл': 'Kostroma Oblast',
+    'Краснодарский край': 'Krasnodar Krai',
+    'Красноярский край': 'Krasnoyarsk Krai',
+    'Курганская обл': 'Kurgan Oblast',
+    'Курская обл': 'Kursk Oblast',
+    'Ленинградская обл': 'Leningrad Oblast',
+    'Липецкая обл': 'Lipetsk Oblast',
+    'Магаданская обл': 'Magadan Oblast',
+    'Московская обл': 'Moscow Oblast',
+    'Мурманская обл': 'Murmansk Oblast',
+    'Нижегородская обл': 'Nizhny Novgorod Oblast',
+    'Новгородская обл': 'Novgorod Oblast',
+    'Новосибирская обл': 'Novosibirsk Oblast',
+    'Омская обл': 'Omsk Oblast',
+    'Оренбургская обл': 'Orenburg Oblast',
+    'Орловская обл': 'Oryol Oblast',
+    'Пензенская обл': 'Penza Oblast',
+    'Псковская обл': 'Pskov Oblast',
+    'Респ Адыгея': 'Republic of Adygea',
+    'Респ Башкортостан': 'Republic of Bashkortostan',
+    'Респ Бурятия': 'Republic of Buryatia',
+    'Респ Дагестан': 'Republic of Dagestan',
+    'Респ Ингушетия': 'Republic of Ingushetia',
+    'Респ Кабардино-Балкарская': 'Kabardino-Balkarian Republic',
+    'Респ Калмыкия': 'Republic of Kalmykia',
+    'Респ Карачаево-Черкесская': 'Karachay-Cherkess Republic',
+    'Респ Карелия': 'Republic of Karelia',
+    'Респ Коми': 'Komi Republic',
+    'Респ Крым': 'Republic of Crimea',
+    'Респ Марий Эл': 'Mari El Republic',
+    'Респ Мордовия': 'Republic of Mordovia',
+    'Респ Саха': 'Sakha Republic (Yakutia)',
+    'Респ Северная Осетия - Алания': 'Republic of North Ossetia-Alania',
+    'Респ Татарстан': 'Republic of Tatarstan',
+    'Респ Тыва': 'Tyva Republic',
+    'Респ Удмуртская': 'Udmurt Republic',
+    'Респ Хакасия': 'Republic of Khakassia',
+    'Респ Чеченская': 'Chechen Republic',
+    'Ростовская обл': 'Rostov Oblast',
+    'Рязанская обл': 'Ryazan Oblast',
+    'Самарская обл': 'Samara Oblast',
+    'Саратовская обл': 'Saratov Oblast',
+    'Сахалинская обл': 'Sakhalin Oblast',
+    'Свердловская обл': 'Sverdlovsk Oblast',
+    'Смоленская обл': 'Smolensk Oblast',
+    'Тамбовская обл': 'Tambov Oblast',
+    'Тверская обл': 'Tver Oblast',
+    'Томская обл': 'Tomsk Oblast',
+    'Тульская обл': 'Tula Oblast',
+    'Тюменская обл': 'Tyumen Oblast',
+    'Ульяновская обл': 'Ulyanovsk Oblast',
+    'Ханты-Мансийский Автономный округ - Югра АО': 'Khanty-Mansi Autonomous Okrug - Yugra',
+    'Челябинская обл': 'Chelyabinsk Oblast',
+    'Чувашская Республика - Чувашия': 'Chuvash Republic',
+    'Чукотский АО': 'Chukotka Autonomous Okrug',
+    'Ямало-Ненецкий АО': 'Yamalo-Nenets Autonomous Okrug',
+    'Ярославская обл': 'Yaroslavl Oblast',
+
+    // Города
+    'Абакан': 'Abakan',
+    'Анадырь': 'Anadyr',
+    'Архангельск': 'Arkhangelsk',
+    'Астрахань': 'Astrakhan',
+    'Барнаул': 'Barnaul',
+    'Белгород': 'Belgorod',
+    'Биробиджан': 'Birobidzhan',
+    'Благовещенск': 'Blagoveshchensk',
+    'Брянск': 'Bryansk',
+    'Великий Новгород': 'Veliky Novgorod',
+    'Владивосток': 'Vladivostok',
+    'Владикавказ': 'Vladikavkaz',
+    'Владимир': 'Vladimir',
+    'Волгоград': 'Volgograd',
+    'Вологда': 'Vologda',
+    'Воронеж': 'Voronezh',
+    'Горно-Алтайск': 'Gorno-Altaysk',
+    'Грозный': 'Grozny',
+    'Екатеринбург': 'Yekaterinburg',
+    'Иваново': 'Ivanovo',
+    'Ижевск': 'Izhevsk',
+    'Иркутск': 'Irkutsk',
+    'Йошкар-Ола': 'Yoshkar-Ola',
+    'Казань': 'Kazan',
+    'Калининград': 'Kaliningrad',
+    'Калуга': 'Kaluga',
+    'Кемерово': 'Kemerovo',
+    'Киров': 'Kirov',
+    'Кострома': 'Kostroma',
+    'Краснодар': 'Krasnodar',
+    'Красноярск': 'Krasnoyarsk',
+    'Курган': 'Kurgan',
+    'Курск': 'Kursk',
+    'Кызыл': 'Kyzyl',
+    'Липецк': 'Lipetsk',
+    'Магадан': 'Magadan',
+    'Магас': 'Magas',
+    'Майкоп': 'Maykop',
+    'Махачкала': 'Makhachkala',
+    'Москва': 'Moscow',
+    'Мурманск': 'Murmansk',
+    'Нальчик': 'Nalchik',
+    'Нарьян-Мар': 'Naryan-Mar',
+    'Нижний Новгород': 'Nizhny Novgorod',
+    'Новосибирск': 'Novosibirsk',
+    'Омск': 'Omsk',
+    'Оренбург': 'Orenburg',
+    'Орёл': 'Oryol',
+    'Пенза': 'Penza',
+    'Пермь': 'Perm',
+    'Петрозаводск': 'Petrozavodsk',
+    'Петропавловск-Камчатский': 'Petropavlovsk-Kamchatsky',
+    'Псков': 'Pskov',
+    'Ростов-на-Дону': 'Rostov-on-Don',
+    'Рязань': 'Ryazan',
+    'Салехард': 'Salekhard',
+    'Самара': 'Samara',
+    'Санкт-Петербург': 'Saint Petersburg',
+    'Саранск': 'Saransk',
+    'Саратов': 'Saratov',
+    'Севастополь': 'Sevastopol',
+    'Смоленск': 'Smolensk',
+    'Ставрополь': 'Stavropol',
+    'Сыктывкар': 'Syktyvkar',
+    'Тамбов': 'Tambov',
+    'Тверь': 'Tver',
+    'Томск': 'Tomsk',
+    'Тула': 'Tula',
+    'Тюмень': 'Tyumen',
+    'Улан-Удэ': 'Ulan-Ude',
+    'Ульяновск': 'Ulyanovsk',
+    'Уфа': 'Ufa',
+    'Хабаровск': 'Khabarovsk',
+    'Ханты-Мансийск': 'Khanty-Mansiysk',
+    'Чебоксары': 'Cheboksary',
+    'Челябинск': 'Chelyabinsk',
+    'Черкесск': 'Cherkessk',
+    'Чита': 'Chita',
+    'Элиста': 'Elista',
+    'Южно-Сахалинск': 'Yuzhno-Sakhalinsk',
+    'Якутск': 'Yakutsk',
+    'Ярославль': 'Yaroslavl'
+};
+
+        {% if user and user.city %}
+            const russianCity = '{{ user.city }}'.trim();
+            city = encodeURIComponent(cityTranslations[russianCity]);
+        {% else %}
+            city = 'Kirov';
+        {% endif %}
+
+        const url = `https://api.openweathermap.org/data/2.5/weather?q=${encodeURIComponent(city)}&units=metric&appid=${apiKey}&lang=ru`;
 
         try {
             const response = await fetch(url);
-            if (!response.ok) throw new Error(`Ошибка HTTP: ${response.status}`);
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.message || 'Ошибка запроса');
+            }
 
             const data = await response.json();
-            console.log('Данные от API:', data);
 
-            // Обновление данных погоды
             document.getElementById('temp').textContent = Math.round(data.main.temp);
             document.getElementById('weatherDesc').textContent = data.weather[0].description;
 
-            // Исправление URL иконки (добавление размера и формата)
             const iconCode = data.weather[0].icon;
-            const iconUrl = `https://openweathermap.org/img/wn/${iconCode}@2x.png`;
-            document.getElementById('weatherIcon').src = iconUrl;
-            document.getElementById('weatherIcon').style.display = 'block'; // Гарантия отображения
+            document.getElementById('weatherIcon').src =
+                `https://openweathermap.org/img/wn/${iconCode}@2x.png`;
 
         } catch (error) {
             console.error('Ошибка погоды:', error);
             document.querySelector('.weather-widget').innerHTML = `
                 <div style="color: #ff4444; font-size: 12px;">
-                    Погода недоступна: ${error.message}
+                    Ошибка получения погоды: ${error.message}
                 </div>`;
         }
     }
     window.addEventListener('DOMContentLoaded', fetchWeather);
 </script>
-
 </body>
 </html>
