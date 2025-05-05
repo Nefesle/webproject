@@ -4,19 +4,818 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Профиль | Велоклуб "Сотня"</title>
+    <link rel="stylesheet" type="text/css" href="styles.css">
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            background-image: url('/static/background_base.jpg');
+            background-size: cover;
+            background-position: center 15%;
+            background-repeat: no-repeat;
+            background-color: rgba(255, 255, 255, 0.5);
+            background-blend-mode: lighten;
+            color: #fff !important;
+            font-family: sans-serif;
+            position: relative;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+            min-height: 100vh;
+        }
+
+        .home-button-container {
+            position: fixed;
+            top: 220px;
+            right: 20px;
+            z-index: 10;
+        }
+
+        .home-button {
+            padding: 12px 20px;
+            background: #e9b50b;
+            color: #000 !important;
+            text-decoration: none;
+            border: 2px solid #000;
+            border-radius: 4px;
+            font-weight: bold;
+            transition: background 0.3s;
+        }
+
+        .home-button:hover {
+            background: #d8a50b;
+        }
+
+        .logo-container {
+            position: absolute;
+            top: 10px;
+            left: 20px;
+            width: 320px;
+            z-index: 1;
+        }
+
+        .logo-container img {
+            width: 100%;
+            height: auto;
+            border: 2px solid #333;
+            border-radius: 5px;
+            box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
+            background-color: white;
+        }
+
+        .profile-container {
+            position: relative;
+            top: -18px;
+            left: 340px;
+            right: 20px;
+            padding: 30px;
+            background-color: rgba(0, 0, 0, 0.6);
+            border-radius: 10px;
+            z-index: 1;
+        }
+
+        .user-info {
+            padding: 20px;
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            margin-top: 15px;
+        }
+
+        .user-info p {
+            font-size: 18px;
+            margin: 15px 0;
+            color: #e9b50b;
+        }
+
+        .edit-button {
+            background: #e9b50b;
+            padding: 12px 25px;
+            border: 2px solid #000;
+            border-radius: 4px;
+            color: #000;
+            cursor: pointer;
+            margin-top: 20px;
+            font-weight: bold;
+        }
+
+        .input__container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 10;
+        }
+
+        .input__button__shadow {
+            cursor: pointer;
+            border: 3px solid #000;
+            background: #e9b50b;
+            padding: 20px 40px;
+            font-weight: bold;
+            font-size: 24px;
+            text-transform: uppercase;
+            position: relative;
+            z-index: 3;
+            border-radius: 4px;
+            transition: background 0.3s, transform 0.2s;
+            color: #000;
+        }
+
+        .input__button__shadow:active {
+            background: #d8a50b;
+            transform: scale(0.95);
+        }
+
+        /* Стили для достижений */
+        .achievements-container {
+            position: relative;
+            left: 340px;
+            margin: 20px 0;
+            padding: 30px;
+            background-color: rgba(0, 0, 0, 0.6);
+            border-radius: 10px;
+            width: calc(100% - 380px);
+        }
+
+        .achievements-list {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .achievement-item {
+            padding: 15px;
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            text-align: center;
+            font-size: 16px;
+        }
+
+        /* Позиционирование погоды */
+        .schedule-weather-container {
+            position: absolute;
+            left: 20px;
+            top: 400px;
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        /* Модальные окна */
+        .dialog-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(5px);
+            z-index: 999;
+            display: none;
+        }
+
+        .dialog-box {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: #fff;
+            border: 4px solid #000;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            width: 300px;
+            height: 170px;
+            z-index: 1000;
+            display: none;
+            border-radius: 8px;
+            overflow: visible;
+            color: #000;
+        }
+
+        .close-button {
+            position: absolute;
+            top: -15px;
+            right: -15px;
+            cursor: pointer;
+            font-size: 20px;
+            color: red !important;
+            border: 2px solid red;
+            border-radius: 50%;
+            padding: 5px;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: white;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .dialog-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .dialog-option {
+            padding: 15px 25px;
+            background-color: #e9b50b;
+            color: #000;
+            font-size: 18px;
+            border: 2px solid #000;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            font-weight: bold;
+        }
+
+        .dialog-option:hover {
+            background-color: #d8a50b;
+        }
+
+        .footer-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            width: 100%;
+            margin: 0 auto;
+        }
+
+        .application-links {
+            margin-top: 25px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .application-button {
+            padding: 12px 20px;
+            background: #e9b50b;
+            color: #000 !important;
+            text-decoration: none;
+            border: 2px solid #000;
+            border-radius: 4px;
+            font-weight: bold;
+            transition: all 0.3s;
+            text-align: center;
+        }
+
+        .application-button:hover {
+            background: #d8a50b;
+            transform: translateY(-2px);
+        }
+
+        .contacts {
+            display: flex;
+            align-items: center;
+            gap: 30px;
+        }
+
+        .contacts h3 {
+            margin: 0;
+            white-space: nowrap;
+            color: yellow !important;
+        }
+
+        .contact-line {
+            display: flex;
+            gap: 25px;
+            align-items: center;
+        }
+
+        .contact-phone {
+            font-family: 'Arial Black', sans-serif;
+            font-size: 18px;
+            color: #ffd700 !important;
+            margin: 0 !important;
+            white-space: nowrap;
+        }
+
+        .contact-email {
+            font-family: 'Courier New', monospace;
+            font-size: 16px;
+            color: #00ff00 !important;
+            margin: 0 !important;
+            white-space: nowrap;
+        }
+
+        .social-links a {
+            display: inline-block;
+            padding: 8px 15px;
+            background: rgba(233, 181, 11, 0.9);
+            border-radius: 5px;
+            color: #000 !important;
+            font-family: 'Arial', sans-serif;
+            font-weight: bold;
+            text-decoration: none !important;
+            transition: 0.3s;
+        }
+
+        .social-links a:hover {
+            background: #ffd700;
+            transform: scale(1.05);
+        }
+
+        .schedule-weather-container {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            margin-top: 25px;
+            justify-content: flex-end;
+        }
+
+        .zayvka__container {
+            position: absolute;
+            top: 265px;
+            left: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            z-index: 2;
+        }
+
+        .schedule-button {
+            cursor: pointer;
+            background: #e9b50b;
+            padding: 12px 25px;
+            font-weight: bold;
+            font-size: 18px;
+            border: 2px solid #000;
+            border-radius: 4px;
+            transition: background 0.3s;
+            color: #000;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .schedule-button:hover {
+            background: #d8a50b;
+        }
+
+        .weather-widget {
+            background: rgba(0, 0, 0, 0.7);
+            padding: 10px 15px;
+            border-radius: 8px;
+            color: #fff;
+            min-width: 140px;
+            backdrop-filter: blur(3px);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        #weatherInfo {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        #weatherIcon {
+            width: 40px;
+            height: 40px;
+        }
+
+        #temp {
+            font-size: 20px;
+            font-weight: bold;
+            color: #ffd700;
+        }
+
+        #weatherDesc {
+            font-size: 12px;
+            text-transform: capitalize;
+        }
+        .site-footer {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: #000;
+            padding: 15px 20px;
+            border-top: 3px solid #e9b50b;
+            z-index: 100;
+            height: 90px;
+            display: flex;
+            align-items: center;
+            opacity: 0.9;
+        }
+
+        .flash-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 10000;
+            max-width: 300px;
+        }
+
+        .flash-message {
+            padding: 15px 35px 15px 20px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+            position: relative;
+            animation: slideIn 0.3s ease-out;
+            opacity: 0.95;
+        }
+
+        .flash-message.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .close-flash {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            font-size: 20px;
+            color: inherit;
+        }
+
+        .dialog-box {
+            animation: modalSlideIn 0.3s ease-out;
+        }
+
+        .dialog-box {
+                height: 160px; /* Уменьшаем высоту окна */
+            }
+
+            .dialog-content {
+                margin-top: 0px; /* Уменьшаем верхний отступ контента */
+                gap: 12px; /* Уменьшаем расстояние между элементами */
+            }
+
+            h3 {
+                margin: 5px 0 !important; /* Уменьшаем отступы у заголовка */
+                font-size: 16px; /* Опционально: уменьшаем размер шрифта */
+            }
+
+        @keyframes modalSlideIn {
+            from {
+                transform: translate(-50%, -60%);
+                opacity: 0;
+            }
+            to {
+                transform: translate(-50%, -50%);
+                opacity: 1;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .logo-container {
+                width: 150px;
+                top: 10px;
+                left: 10px;
+            }
+
+            .profile-container {
+                position: static;
+                margin: 160px 10px 0 10px;
+                left: auto;
+                right: auto;
+            }
+
+            .home-button-container {
+                position: absolute;
+                top: 305px;
+                left: 20px;
+                display: flex;
+                flex-direction: column;
+                gap: 10px;
+                z-index: 2;
+            }
+
+            .input__container {
+                top: 180px;
+                left: 10px;
+            }
+
+            .user-info p {
+                font-size: 16px;
+            }
+
+            .edit-button {
+                width: 100%;
+                padding: 10px;
+            }
+
+            .application-button {
+                width: 100%;
+                padding: 10px;
+            }
+
+            .dialog-box {
+                width: 90%;
+                height: auto;
+                padding: 15px;
+            }
+
+            .dialog-option {
+                padding: 12px 20px;
+                font-size: 16px;
+            }
+        }
+    </style>
 </head>
 <body>
-    <header>
-        <nav>
-            <a href="/">Главная</a>
-            <a href="{{ url_for('logout') }}">Выйти</a>
-        </nav>
-    </header>
+    <div class="logo-container">
+        <img src="/static/logo.jpg" alt="Логотип велоклуба Сотня">
+    </div>
 
-    <main>
-        <h1>Профиль пользователя</h1>
-        <p><strong>Имя пользователя:</strong> {{ username }}</p>
-        <p><strong>Никнейм:</strong> {{ nickname }}</p>
-    </main>
+    <div class="input__container">
+        <button class="input__button__shadow" onclick="window.location.href='{{ url_for('logout') }}'">Выйти</button>
+    </div>
+
+    <div class="zayvka__container">
+        <a href="/" class="home-button">← На главную</a>
+        <button class="input__button__shadow" onclick="showApplicationForm()" style="margin-top: 15px;">
+    📨 Подать Заявку
+</button>
+    </div>
+
+    <div class="profile-container">
+        <h1>Ваш профиль</h1>
+        <div class="user-info">
+            <p><strong>Имя:</strong> {{ user.first_name }}</p>
+            <p><strong>Фамилия:</strong> {{ user.last_name }}</p>
+            <p><strong>Никнейм:</strong> {{ user.nickname }}</p>
+            <p><strong>Город:</strong> {{ user.city }}</p>
+            {% if user.telegram %}
+            <p><strong>Telegram:</strong> {{ user.telegram }}</p>
+            {% endif %}
+            <button class="edit-button">Редактировать профиль</button>
+        </div>
+    </div>
+
+    <div class="achievements-container">
+        <h2>🎖️ Ваши достижения</h2>
+        <div class="achievements-list">
+            <div class="achievement-item">🏁 Пройдено маршрутов: 12</div>
+            <div class="achievement-item">⏱️ Рекорд скорости: 48 км/ч</div>
+            <div class="achievement-item">🚴♂️ Общий пробег: 356 км</div>
+            <div class="achievement-item">🏅 Уровень: Профи</div>
+        </div>
+    </div>
+
+    <div class="schedule-weather-container">
+        <div class="weather-widget">
+            <div id="weatherInfo">
+                <img id="weatherIcon" src="" alt="Иконка погоды">
+                <div>
+                    <span id="temp"></span>°C
+                    <div id="weatherDesc"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="site-footer">
+        <div class="footer-content">
+            <div class="contacts">
+                <h3>Контакты организаторов:</h3>
+                <div class="contact-line">
+                    <p class="contact-phone">📞 +7 (999) 123-45-67</p>
+                    <p class="contact-email">📧 velo@sotnya.ru</p>
+                </div>
+            </div>
+            <div class="social-links">
+                <a href="https://vk.com/centaine" target="_blank">🔗 ВКонтакте</a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Модальное окно заявки -->
+    <div class="dialog-overlay" id="applicationOverlay"></div>
+    <div class="dialog-box" id="applicationDialog">
+        <div class="close-button" onclick="closeApplicationForm()">×</div>
+        <div class="dialog-content">
+            <h3>Управление заявками</h3>
+            <button class="dialog-option" onclick="window.location.href='/event-application'">
+                📝 Подать новую заявку
+            </button>
+            <button class="dialog-option" onclick="window.location.href='/my-applications'">
+                📋 Посмотреть мои заявки
+            </button>
+        </div>
+    </div>
+
+    <script>
+    // Функции для управления модальным окном заявок
+    function showApplicationForm() {
+        document.getElementById('applicationOverlay').style.display = 'block';
+        document.getElementById('applicationDialog').style.display = 'block';
+    }
+
+    function closeApplicationForm() {
+        document.getElementById('applicationOverlay').style.display = 'none';
+        document.getElementById('applicationDialog').style.display = 'none';
+    }
+
+    // Обработчики событий
+    document.getElementById('applicationOverlay').addEventListener('click', closeApplicationForm);
+</script>
+<script>
+    async function fetchWeather() {
+        const apiKey = '6ea99a2ec083343778562fec4023b8a2';
+        let city;
+
+        // Словарь для перевода русских названий на английские
+        const cityTranslations = {
+    // Регионы
+    'Амурская обл': 'Amur region',
+    'Архангельская обл': 'Arkhangelsk Oblast',
+    'Астраханская обл': 'Astrakhan Oblast',
+    'Белгородская обл': 'Belgorod Oblast',
+    'Брянская обл': 'Bryansk Oblast',
+    'Владимирская обл': 'Vladimir Oblast',
+    'Волгоградская обл': 'Volgograd Oblast',
+    'Вологодская обл': 'Vologda Oblast',
+    'Воронежская обл': 'Voronezh Oblast',
+    'Еврейская Аобл': 'Jewish Autonomous Oblast',
+    'Ивановская обл': 'Ivanovo Oblast',
+    'Иркутская обл': 'Irkutsk Oblast',
+    'Калининградская обл': 'Kaliningrad Oblast',
+    'Калужская обл': 'Kaluga Oblast',
+    'Кемеровская область - Кузбасс': 'Kemerovo Oblast - Kuzbass',
+    'Кировская обл': 'Kirov Oblast',
+    'Костромская обл': 'Kostroma Oblast',
+    'Краснодарский край': 'Krasnodar Krai',
+    'Красноярский край': 'Krasnoyarsk Krai',
+    'Курганская обл': 'Kurgan Oblast',
+    'Курская обл': 'Kursk Oblast',
+    'Ленинградская обл': 'Leningrad Oblast',
+    'Липецкая обл': 'Lipetsk Oblast',
+    'Магаданская обл': 'Magadan Oblast',
+    'Московская обл': 'Moscow Oblast',
+    'Мурманская обл': 'Murmansk Oblast',
+    'Нижегородская обл': 'Nizhny Novgorod Oblast',
+    'Новгородская обл': 'Novgorod Oblast',
+    'Новосибирская обл': 'Novosibirsk Oblast',
+    'Омская обл': 'Omsk Oblast',
+    'Оренбургская обл': 'Orenburg Oblast',
+    'Орловская обл': 'Oryol Oblast',
+    'Пензенская обл': 'Penza Oblast',
+    'Псковская обл': 'Pskov Oblast',
+    'Респ Адыгея': 'Republic of Adygea',
+    'Респ Башкортостан': 'Republic of Bashkortostan',
+    'Респ Бурятия': 'Republic of Buryatia',
+    'Респ Дагестан': 'Republic of Dagestan',
+    'Респ Ингушетия': 'Republic of Ingushetia',
+    'Респ Кабардино-Балкарская': 'Kabardino-Balkarian Republic',
+    'Респ Калмыкия': 'Republic of Kalmykia',
+    'Респ Карачаево-Черкесская': 'Karachay-Cherkess Republic',
+    'Респ Карелия': 'Republic of Karelia',
+    'Респ Коми': 'Komi Republic',
+    'Респ Крым': 'Republic of Crimea',
+    'Респ Марий Эл': 'Mari El Republic',
+    'Респ Мордовия': 'Republic of Mordovia',
+    'Респ Саха': 'Sakha Republic (Yakutia)',
+    'Респ Северная Осетия - Алания': 'Republic of North Ossetia-Alania',
+    'Респ Татарстан': 'Republic of Tatarstan',
+    'Респ Тыва': 'Tyva Republic',
+    'Респ Удмуртская': 'Udmurt Republic',
+    'Респ Хакасия': 'Republic of Khakassia',
+    'Респ Чеченская': 'Chechen Republic',
+    'Ростовская обл': 'Rostov Oblast',
+    'Рязанская обл': 'Ryazan Oblast',
+    'Самарская обл': 'Samara Oblast',
+    'Саратовская обл': 'Saratov Oblast',
+    'Сахалинская обл': 'Sakhalin Oblast',
+    'Свердловская обл': 'Sverdlovsk Oblast',
+    'Смоленская обл': 'Smolensk Oblast',
+    'Тамбовская обл': 'Tambov Oblast',
+    'Тверская обл': 'Tver Oblast',
+    'Томская обл': 'Tomsk Oblast',
+    'Тульская обл': 'Tula Oblast',
+    'Тюменская обл': 'Tyumen Oblast',
+    'Ульяновская обл': 'Ulyanovsk Oblast',
+    'Ханты-Мансийский Автономный округ - Югра АО': 'Khanty-Mansi Autonomous Okrug - Yugra',
+    'Челябинская обл': 'Chelyabinsk Oblast',
+    'Чувашская Республика - Чувашия': 'Chuvash Republic',
+    'Чукотский АО': 'Chukotka Autonomous Okrug',
+    'Ямало-Ненецкий АО': 'Yamalo-Nenets Autonomous Okrug',
+    'Ярославская обл': 'Yaroslavl Oblast',
+
+    // Города
+    'Абакан': 'Abakan',
+    'Анадырь': 'Anadyr',
+    'Архангельск': 'Arkhangelsk',
+    'Астрахань': 'Astrakhan',
+    'Барнаул': 'Barnaul',
+    'Белгород': 'Belgorod',
+    'Биробиджан': 'Birobidzhan',
+    'Благовещенск': 'Blagoveshchensk',
+    'Брянск': 'Bryansk',
+    'Великий Новгород': 'Veliky Novgorod',
+    'Владивосток': 'Vladivostok',
+    'Владикавказ': 'Vladikavkaz',
+    'Владимир': 'Vladimir',
+    'Волгоград': 'Volgograd',
+    'Вологда': 'Vologda',
+    'Воронеж': 'Voronezh',
+    'Горно-Алтайск': 'Gorno-Altaysk',
+    'Грозный': 'Grozny',
+    'Екатеринбург': 'Yekaterinburg',
+    'Иваново': 'Ivanovo',
+    'Ижевск': 'Izhevsk',
+    'Иркутск': 'Irkutsk',
+    'Йошкар-Ола': 'Yoshkar-Ola',
+    'Казань': 'Kazan',
+    'Калининград': 'Kaliningrad',
+    'Калуга': 'Kaluga',
+    'Кемерово': 'Kemerovo',
+    'Киров': 'Kirov',
+    'Кострома': 'Kostroma',
+    'Краснодар': 'Krasnodar',
+    'Красноярск': 'Krasnoyarsk',
+    'Курган': 'Kurgan',
+    'Курск': 'Kursk',
+    'Кызыл': 'Kyzyl',
+    'Липецк': 'Lipetsk',
+    'Магадан': 'Magadan',
+    'Магас': 'Magas',
+    'Майкоп': 'Maykop',
+    'Махачкала': 'Makhachkala',
+    'Москва': 'Moscow',
+    'Мурманск': 'Murmansk',
+    'Нальчик': 'Nalchik',
+    'Нарьян-Мар': 'Naryan-Mar',
+    'Нижний Новгород': 'Nizhny Novgorod',
+    'Новосибирск': 'Novosibirsk',
+    'Омск': 'Omsk',
+    'Оренбург': 'Orenburg',
+    'Орёл': 'Oryol',
+    'Пенза': 'Penza',
+    'Пермь': 'Perm',
+    'Петрозаводск': 'Petrozavodsk',
+    'Петропавловск-Камчатский': 'Petropavlovsk-Kamchatsky',
+    'Псков': 'Pskov',
+    'Ростов-на-Дону': 'Rostov-on-Don',
+    'Рязань': 'Ryazan',
+    'Салехард': 'Salekhard',
+    'Самара': 'Samara',
+    'Санкт-Петербург': 'Saint Petersburg',
+    'Саранск': 'Saransk',
+    'Саратов': 'Saratov',
+    'Севастополь': 'Sevastopol',
+    'Смоленск': 'Smolensk',
+    'Ставрополь': 'Stavropol',
+    'Сыктывкар': 'Syktyvkar',
+    'Тамбов': 'Tambov',
+    'Тверь': 'Tver',
+    'Томск': 'Tomsk',
+    'Тула': 'Tula',
+    'Тюмень': 'Tyumen',
+    'Улан-Удэ': 'Ulan-Ude',
+    'Ульяновск': 'Ulyanovsk',
+    'Уфа': 'Ufa',
+    'Хабаровск': 'Khabarovsk',
+    'Ханты-Мансийск': 'Khanty-Mansiysk',
+    'Чебоксары': 'Cheboksary',
+    'Челябинск': 'Chelyabinsk',
+    'Черкесск': 'Cherkessk',
+    'Чита': 'Chita',
+    'Элиста': 'Elista',
+    'Южно-Сахалинск': 'Yuzhno-Sakhalinsk',
+    'Якутск': 'Yakutsk',
+    'Ярославль': 'Yaroslavl'
+};
+
+        {% if user and user.city %}
+            const russianCity = '{{ user.city }}'.trim();
+            city = encodeURIComponent(cityTranslations[russianCity]);
+        {% else %}
+            city = 'Kirov';
+        {% endif %}
+
+        const url = `https://api.openweathermap.org/data/2.5/weather?q=${encodeURIComponent(city)}&units=metric&appid=${apiKey}&lang=ru`;
+
+        try {
+            const response = await fetch(url);
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.message || 'Ошибка запроса');
+            }
+
+            const data = await response.json();
+
+            document.getElementById('temp').textContent = Math.round(data.main.temp);
+            document.getElementById('weatherDesc').textContent = data.weather[0].description;
+
+            const iconCode = data.weather[0].icon;
+            document.getElementById('weatherIcon').src =
+                `https://openweathermap.org/img/wn/${iconCode}@2x.png`;
+
+        } catch (error) {
+            console.error('Ошибка погоды:', error);
+            document.querySelector('.weather-widget').innerHTML = `
+                <div style="color: #ff4444; font-size: 12px;">
+                    Ошибка получения погоды: ${error.message}
+                </div>`;
+        }
+    }
+    window.addEventListener('DOMContentLoaded', fetchWeather);
+</script>
 </body>
 </html>
