@@ -5,6 +5,7 @@ from datetime import datetime
 
 db = SQLAlchemy()
 
+
 class User(db.Model):
     __tablename__ = 'users'
     id = db.Column(db.Integer, primary_key=True)
@@ -16,6 +17,10 @@ class User(db.Model):
     password = db.Column(db.String(128))
     applications = db.relationship('Application', backref='user', lazy=True)
 
+    def set_password(self, password):
+        self.password = generate_password_hash(password, method='pbkdf2:sha256')
+
+
 class Event(db.Model):
     __tablename__ = 'events'
     id = db.Column(db.Integer, primary_key=True)
@@ -26,6 +31,7 @@ class Event(db.Model):
 
     def __repr__(self):
         return f'<Event {self.title}>'
+
 
 class Application(db.Model):
     __tablename__ = 'applications'
@@ -41,9 +47,6 @@ class Application(db.Model):
 
     def __repr__(self):
         return f'<User {self.nickname}>'
-
-    def set_password(self, password):
-        self.password = generate_password_hash(password, method='pbkdf2:sha256')
 
     def check_password(self, password):
         return check_password_hash(self.password, password)

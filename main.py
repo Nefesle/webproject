@@ -208,6 +208,53 @@ def event_application():
 
     return render_template('event_application.html', events=events)
 
+
+@app.route('/edit_profile', methods=['GET', 'POST'])
+def edit_profile():
+    if 'username' not in session:
+        flash('Требуется авторизация', 'error')
+        return redirect(url_for('login'))
+
+    # Получаем пользователя из базы данных
+    user = User.query.filter_by(nickname=session['username']).first()
+    if not user:
+        flash('Пользователь не найден', 'error')
+        return redirect(url_for('index'))
+
+    if request.method == 'POST':
+        # Получаем данные из формы
+        new_nickname = request.form.get('nickname')
+        old_password = request.form.get('old_password')
+        new_password = request.form.get('new_password')
+
+        # Проверка никнейма
+        if new_nickname and new_nickname != user.nickname:
+            if User.query.filter_by(nickname=new_nickname).first():
+                flash('Этот никнейм уже занят.', 'error')
+                return redirect(url_for('edit_profile'))
+            user.nickname = new_nickname
+            session['username'] = new_nickname  # Обновляем сессию
+
+        # Проверка пароля
+        if old_password or new_password:
+            if not check_password_hash(user.password, old_password):
+                flash('Старый пароль неверен.', 'error')
+                return redirect(url_for('edit_profile'))
+            if new_password:
+                user.set_password(new_password)
+
+        # Сохраняем изменения
+        try:
+            db.session.commit()
+            flash('Профиль успешно обновлён!', 'success')
+            return redirect(url_for('profile'))
+        except Exception as e:
+            db.session.rollback()
+            flash(f'Ошибка: {str(e)}', 'error')
+
+    return render_template('edit_profile.html', user=user)
+
+
 @app.route('/my-applications')
 def my_applications():
     if 'username' not in session:
