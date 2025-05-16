@@ -1,0 +1,7 @@
+flask
+flask_wtf
+wtforms
+werkzeug
+datetime
+pillow
+flask_sqlalchemy
