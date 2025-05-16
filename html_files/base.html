@@ -199,10 +199,10 @@
         }
 
         .photo-album {
-            width: 62%;
-            margin-top: 20px;
-            margin-left: auto;
-            margin-right: auto;
+            width: 100%; /* Было 62% */
+            margin-top: 8px;
+            margin-left: 0; /* Убрано auto */
+            margin-right: 0; /* Убрано auto */
             padding: 20px;
             background-color: rgba(0, 0, 0, 0.6);
             border-radius: 10px;
@@ -210,14 +210,17 @@
 
         .photo-gallery {
             display: flex;
-            flex-wrap: wrap;
+            flex-wrap: nowrap; /* Заменило wrap */
             gap: 15px;
-            justify-content: center;
+            justify-content: flex-start; /* Заменило center */
+            overflow-x: auto; /* Добавлена горизонтальная прокрутка */
+            padding-bottom: 10px; /* Для пространства под скролл */
         }
 
         .photo-item {
-            width: 150px; /* Ширина миниатюры */
-            height: 150px; /* Высота миниатюры */
+            width: 200px; /* Увеличено с 150px */
+            height: 200px; /* Увеличено с 150px */
+            flex-shrink: 0; /* Запрет уменьшения размера */
             overflow: hidden;
             border-radius: 8px;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
@@ -599,8 +602,8 @@
             document.getElementById('weatherDesc').textContent = data.weather[0].description;
 
             const iconCode = data.weather[0].icon;
-            document.getElementById('weatherIcon').src =
-                `https://openweathermap.org/img/wn/ ${iconCode}@2x.png`;
+           document.getElementById('weatherIcon').src =
+            `https://openweathermap.org/img/wn/${iconCode}@2x.png`;
 
         } catch (error) {
             console.error('Ошибка погоды:', error);
