@@ -4,3 +4,4 @@ wtforms
 werkzeug
 datetime
 pillow
+flask_sqlalchemy
