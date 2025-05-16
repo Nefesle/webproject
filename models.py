@@ -1,6 +1,5 @@
 from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy.orm import validates
-from werkzeug.security import generate_password_hash, check_password_hash
+from werkzeug.security import generate_password_hash
 from datetime import datetime
 
 db = SQLAlchemy()
@@ -16,43 +15,26 @@ class User(db.Model):
     nickname = db.Column(db.String(16), unique=True)
     password = db.Column(db.String(128))
     applications = db.relationship('Application', backref='user', lazy=True)
+    photos = db.relationship('Photo', backref='user')
 
     def set_password(self, password):
         self.password = generate_password_hash(password, method='pbkdf2:sha256')
 
 
-class Event(db.Model):
-    __tablename__ = 'events'
-    id = db.Column(db.Integer, primary_key=True)
-    title = db.Column(db.String(100), nullable=False)
-    description = db.Column(db.Text)
-    date = db.Column(db.DateTime, nullable=False)
-    location = db.Column(db.String(100))
-
-    def __repr__(self):
-        return f'<Event {self.title}>'
-
-
 class Application(db.Model):
     __tablename__ = 'applications'
-    id = db.Column(db.Integer, primary_key=True)
+    id = db.Column(db.Integer, primary_key=True)  # Первичный ключ
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
-    event_id = db.Column(db.Integer, db.ForeignKey('events.id'), nullable=False)
-    experience = db.Column(db.Text, nullable=False)
-    equipment = db.Column(db.String(200))
-    status = db.Column(db.String(20), default='pending')  # pending/approved/rejected
-    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    medal = db.Column(db.Boolean, default=False)  # Поле для заказа медали
+    date = db.Column(db.String(8), nullable=False)
+    distance = db.Column(db.Integer, nullable=False)
 
-    event = db.relationship('Event', backref='applications')
 
-    def __repr__(self):
-        return f'<User {self.nickname}>'
-
-    def check_password(self, password):
-        return check_password_hash(self.password, password)
-
-    @validates('nickname')
-    def validate_nickname(self, key, nickname):
-        if len(nickname) < 3 or len(nickname) > 16:
-            raise ValueError('Никнейм должен быть длиной от 3 до 16 символов.')
-        return nickname
+class Photo(db.Model):
+    __tablename__ = 'photos'
+    id = db.Column(db.Integer, primary_key=True)
+    filename = db.Column(db.String(255), nullable=False)  # Имя оригинального файла
+    thumbnail_filename = db.Column(db.String(255), nullable=True)  # Имя миниатюры
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=True)  # ID пользователя
+    is_anonymous = db.Column(db.Boolean, default=False)  # Флаг анонимности
+    uploaded_at = db.Column(db.DateTime, default=datetime.utcnow)  # Дата загрузки

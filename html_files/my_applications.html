@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Мои заявки | Велоклуб "Сотня"</title>
+    <style>
+        /* Стили для фона страницы */
+        body {
+            margin: 0;
+            padding: 0;
+            background-image: url('/static/background_base.jpg');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* Блюр на фоне */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: inherit;
+            background-size: cover;
+            background-position: center;
+            filter: blur(5px);
+            z-index: -1;
+        }
+
+        /* Контейнер для блока с заявками */
+        .application-container {
+            position: relative;
+            background-color: rgba(0, 0, 0, 0.8); /* Черный фон с прозрачностью */
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+            max-width: 600px;
+            width: 100%;
+            color: #fff; /* Белый текст */
+            text-align: center;
+        }
+
+        /* Заголовок */
+        h1 {
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+
+        /* Календарь заявок */
+        .calendar-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .event-date {
+            background-color: #e9b50b;
+            color: #000;
+            padding: 10px;
+            border-radius: 5px;
+            text-align: center;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .event-date:hover {
+            background-color: #d8a50b;
+        }
+
+        .event-date ul {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .event-date li {
+            margin-bottom: 5px;
+        }
+
+        /* Удаление заявки */
+        .delete-button {
+            background-color: red;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-left: 10px;
+            position: relative;
+        }
+
+        /* Кнопка "Назад в профиль" */
+        .home-button-container {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            z-index: 10;
+        }
+
+        .home-button {
+            display: inline-block;
+            padding: 12px 20px;
+            font-size: 16px;
+            font-weight: bold;
+            color: #fff;
+            background-color: #e9b50b;
+            border: none;
+            border-radius: 5px;
+            text-decoration: none;
+            transition: background-color 0.3s, transform 0.2s;
+        }
+
+        .home-button:hover {
+            background-color: #d8a50b;
+        }
+
+        .home-button:active {
+            transform: scale(0.95);
+        }
+    </style>
+</head>
+<body>
+    <!-- Контейнер для блока с заявками -->
+    <div class="application-container">
+        <h1>📅 Зарегистрирован на бреветы:</h1>
+
+        <!-- Кнопка "Назад в профиль" -->
+        <div class="home-button-container">
+            <a href="/profile" class="home-button">← Назад в профиль</a>
+        </div>
+
+        <!-- Календарь заявок -->
+        <div class="calendar-container">
+            {% for date, apps in events.items() %}
+                <div class="event-date">
+                    <ul>
+                        {% for app in apps %}
+                        <button class="delete-button" onclick="confirmDelete({{ app.id }})">×</button>
+                            <li>
+                                <span class="date">{{ date }}</span>
+                                {{ app.distance }} км
+                                {% if app.medal %}🏅{% endif %}
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <script>
+        // Функция для подтверждения удаления
+        function confirmDelete(applicationId) {
+            if (confirm('Вы уверены, что хотите удалить эту заявку?')) {
+                fetch(`/delete-application/${applicationId}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                }).then(response => {
+                    if (response.redirected) {
+                        window.location.href = response.url; // Перезагрузка страницы
+                    } else {
+                        alert('Произошла ошибка при удалении.');
+                    }
+                });
+            }
+        }
+    </script>
+</body>
+</html>

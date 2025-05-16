@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Альбом | Велоклуб "Сотня"</title>
+    <link rel="stylesheet" type="text/css" href="/static/styles.css">
+    <style>
+        /* Общие стили */
+        body {
+            margin: 0;
+            padding: 20px;
+            background-color: #faeedd; /* Простой фон для прокрутки */
+            color: #333;
+            font-family: sans-serif;
+            min-height: 100vh;
+        }
+
+        /* Кнопка "На главную" */
+        .home-button-container {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            z-index: 10;
+        }
+
+        .home-button {
+            padding: 12px 20px;
+            background: #e9b50b;
+            color: #000 !important;
+            text-decoration: none;
+            border: 2px solid #000;
+            border-radius: 4px;
+            font-weight: bold;
+            transition: background 0.3s;
+        }
+
+        .home-button:hover {
+            background: #d8a50b;
+        }
+
+        /* Заголовок */
+        h1 {
+            text-align: center;
+            font-size: 24px;
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        /* Галерея фотографий */
+        .photo-gallery {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            justify-content: center;
+        }
+
+        .photo-item {
+            width: 200px; /* Ширина фото */
+            height: 200px; /* Высота фото */
+            overflow: hidden;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            position: relative;
+            cursor: pointer;
+        }
+
+        .photo-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover; /* Сохраняет пропорции изображения */
+            border-radius: 8px;
+        }
+
+        /* Подпись под фотографией */
+        .photo-caption {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(0, 0, 0, 0.6);
+            color: #fff;
+            padding: 5px;
+            font-size: 14px;
+            text-align: center;
+            border-bottom-left-radius: 8px;
+            border-bottom-right-radius: 8px;
+        }
+
+        /* Стиль для анонимных фотографий */
+        .photo-caption.anonymous {
+            font-style: italic;
+            color: #aaa;
+        }
+
+        /* Модальное окно для отображения фото */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9); /* Темный фон */
+            backdrop-filter: blur(5px); /* Размытие фона */
+            z-index: 999;
+            display: none;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            max-width: 90%;
+            max-height: 90%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-image {
+            max-width: 100%;
+            max-height: 100%;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Кнопка закрытия модального окна */
+        .close-modal {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: #e9b50b;
+            color: #000;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+        }
+
+        .close-modal:hover {
+            background: #d8a50b;
+        }
+    </style>
+</head>
+<body>
+    <!-- Кнопка "На главную" -->
+    <div class="home-button-container">
+        <a href="/" class="home-button">← На главную</a>
+    </div>
+
+    <!-- Альбом -->
+    <div class="album-container">
+        <h1>Фотоальбом</h1>
+        <div class="photo-gallery">
+            {% for photo in photos %}
+                <div class="photo-item" data-src="{{ url_for('static', filename='uploads/' + photo.filename) }}">
+                    <img src="{{ url_for('static', filename='uploads/' + photo.filename) }}" alt="Фото">
+                    <div class="photo-caption {% if photo.is_anonymous %}anonymous{% endif %}">
+                        {% if not photo.is_anonymous %}
+                            Автор: {{ photo.user.nickname }}
+                        {% else %}
+                            Анонимное фото
+                        {% endif %}
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- Модальное окно -->
+    <div class="modal-overlay" id="modalOverlay">
+        <button class="close-modal" id="closeModal">Закрыть</button>
+        <div class="modal-content">
+            <img src="" alt="Увеличенное фото" class="modal-image" id="modalImage">
+        </div>
+    </div>
+
+    <script>
+        // Открытие модального окна при клике на фото
+        document.querySelectorAll('.photo-item').forEach(item => {
+            item.addEventListener('click', () => {
+                const src = item.getAttribute('data-src');
+                const modalOverlay = document.getElementById('modalOverlay');
+                const modalImage = document.getElementById('modalImage');
+
+                modalImage.src = src;
+                modalOverlay.style.display = 'flex';
+            });
+        });
+
+        // Закрытие модального окна
+        document.getElementById('closeModal').addEventListener('click', () => {
+            const modalOverlay = document.getElementById('modalOverlay');
+            modalOverlay.style.display = 'none';
+        });
+
+        // Закрытие модального окна при клике вне изображения
+        document.getElementById('modalOverlay').addEventListener('click', (event) => {
+            if (event.target === event.currentTarget) {
+                const modalOverlay = document.getElementById('modalOverlay');
+                modalOverlay.style.display = 'none';
+            }
+        });
+    </script>
+</body>
+</html>

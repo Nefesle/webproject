@@ -7,6 +7,8 @@
     <link rel="stylesheet" type="text/css" href="styles.css">
     <style>
         body {
+            height: 100%;
+            overflow: hidden;
             margin: 0;
             padding: 20px;
             background-image: url('/static/background_base.jpg');
@@ -62,6 +64,7 @@
         }
 
         .profile-container {
+            max-width: 1000px;
             position: relative;
             top: -18px;
             left: 340px;
@@ -86,14 +89,26 @@
         }
 
         .edit-button {
-            background: #e9b50b;
-            padding: 12px 25px;
-            border: 2px solid #000;
-            border-radius: 4px;
-            color: #000;
-            cursor: pointer;
-            margin-top: 20px;
+            display: inline-block;
+            padding: 12px 20px;
+            font-size: 16px;
             font-weight: bold;
+            text-align: center;
+            text-decoration: none; /* Убираем подчеркивание для ссылок */
+            color: #000; /* Цвет текста */
+            background-color: #e9b50b; /* Цвет фона */
+            border: 2px solid #000; /* Граница */
+            border-radius: 4px; /* Скругленные углы */
+            cursor: pointer; /* Курсор указывает на кликабельность */
+            transition: background-color 0.3s, transform 0.2s; /* Плавные переходы */
+        }
+
+        .edit-button:hover {
+            background-color: #d8a50b; /* Цвет при наведении */
+        }
+
+        .edit-button:active {
+            transform: scale(0.95); /* Эффект уменьшения при нажатии */
         }
 
         .input__container {
@@ -265,6 +280,24 @@
             transform: translateY(-2px);
         }
 
+        .manage-photos-button {
+            display: inline-block;
+            margin-top: 15px;
+            padding: 12px 20px;
+            background-color: #e9b50b;
+            color: #000 !important;
+            text-decoration: none;
+            border: 2px solid #000;
+            border-radius: 4px;
+            font-weight: bold;
+            transition: background 0.3s;
+            cursor: pointer;
+        }
+
+        .manage-photos-button:hover {
+            background-color: #d8a50b;
+        }
+
         .contacts {
             display: flex;
             align-items: center;
@@ -408,31 +441,6 @@
             max-width: 300px;
         }
 
-        .flash-message {
-            padding: 15px 35px 15px 20px;
-            margin-bottom: 10px;
-            border-radius: 5px;
-            position: relative;
-            animation: slideIn 0.3s ease-out;
-            opacity: 0.95;
-        }
-
-        .flash-message.success {
-            background: #d4edda;
-            color: #155724;
-            border: 1px solid #c3e6cb;
-        }
-
-        .close-flash {
-            position: absolute;
-            right: 10px;
-            top: 50%;
-            transform: translateY(-50%);
-            cursor: pointer;
-            font-size: 20px;
-            color: inherit;
-        }
-
         .dialog-box {
             animation: modalSlideIn 0.3s ease-out;
         }
@@ -544,19 +552,15 @@
             {% if user.telegram %}
             <p><strong>Telegram:</strong> {{ user.telegram }}</p>
             {% endif %}
-            <button class="edit-button" onclick="window.location.href='{{ url_for('edit_profile') }}'">
+            <!-- Кнопка "Редактировать профиль" -->
+            <a href="{{ url_for('edit_profile') }}" class="edit-button">
                 Редактировать профиль
-            </button>
-        </div>
-    </div>
+            </a>
 
-    <div class="achievements-container">
-        <h2>🎖️ Ваши достижения</h2>
-        <div class="achievements-list">
-            <div class="achievement-item">🏁 Пройдено маршрутов: 12</div>
-            <div class="achievement-item">⏱️ Рекорд скорости: 48 км/ч</div>
-            <div class="achievement-item">🚴♂️ Общий пробег: 356 км</div>
-            <div class="achievement-item">🏅 Уровень: Профи</div>
+            <!-- Кнопка "Управление фотографиями" -->
+            <a href="{{ url_for('profile_photos') }}" class="edit-button">
+                Управление фотографиями
+            </a>
         </div>
     </div>
 
@@ -571,21 +575,6 @@
             </div>
         </div>
     </div>
-
-    <footer class="site-footer">
-        <div class="footer-content">
-            <div class="contacts">
-                <h3>Контакты организаторов:</h3>
-                <div class="contact-line">
-                    <p class="contact-phone">📞 +7 (999) 123-45-67</p>
-                    <p class="contact-email">📧 velo@sotnya.ru</p>
-                </div>
-            </div>
-            <div class="social-links">
-                <a href="https://vk.com/centaine" target="_blank">🔗 ВКонтакте</a>
-            </div>
-        </div>
-    </footer>
 
     <!-- Модальное окно заявки -->
     <div class="dialog-overlay" id="applicationOverlay"></div>

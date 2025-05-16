@@ -115,8 +115,6 @@
             color: #000;
         }
 
-
-        /* Модальное окно с расписанием */
         .schedule-dialog {
             width: 80%;
             max-width: 800px;
@@ -200,37 +198,96 @@
             align-items: center;
         }
 
-        .contact-phone {
-            font-family: 'Arial Black', sans-serif;
-            font-size: 18px;
-            color: #ffd700 !important;
-            margin: 0 !important;
-            white-space: nowrap;
+        .photo-album {
+            width: 62%;
+            margin-top: 20px;
+            margin-left: auto;
+            margin-right: auto;
+            padding: 20px;
+            background-color: rgba(0, 0, 0, 0.6);
+            border-radius: 10px;
         }
 
-        .contact-email {
-            font-family: 'Courier New', monospace;
-            font-size: 16px;
-            color: #00ff00 !important;
-            margin: 0 !important;
-            white-space: nowrap;
+        .photo-gallery {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            justify-content: center;
         }
 
-        .social-links a {
+        .photo-item {
+            width: 150px; /* Ширина миниатюры */
+            height: 150px; /* Высота миниатюры */
+            overflow: hidden;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .photo-item img {
+            width: 100%; /* Изображение занимает всю ширину контейнера */
+            height: 100%; /* Изображение занимает всю высоту контейнера */
+            object-fit: cover; /* Сохраняет пропорции изображения */
+            border-radius: 8px;
+        }
+
+        .upload-button {
+            margin-top: 10px;
             display: inline-block;
-            padding: 8px 15px;
-            background: rgba(233, 181, 11, 0.9);
+            padding: 10px 20px;
+            background-color: #e9b50b;
+            color: #000;
+            border: none;
             border-radius: 5px;
-            color: #000 !important;
-            font-family: 'Arial', sans-serif;
-            font-weight: bold;
-            text-decoration: none !important;
-            transition: 0.3s;
+            cursor: pointer;
+            transition: background-color 0.3s;
         }
 
-        .social-links a:hover {
-            background: #ffd700;
-            transform: scale(1.05);
+        .upload-button:hover {
+            background-color: #d8a50b;
+        }
+
+        .view-album-button {
+            margin-top: 10px;
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #e9b50b;
+            color: #000;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            max-width: fit-content;
+            text-align: center;
+        }
+        .social-links {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .social-links h3 {
+            color: yellow; /* Жёлтый цвет заголовка */
+            margin: 0; /* Убираем отступы */
+        }
+
+        .social-buttons {
+            display: flex;
+            gap: 10px; /* Расстояние между кнопками */
+        }
+
+        .social-buttons a {
+            text-decoration: none; /* Убираем подчёркивание ссылок */
+            color: #000; /* Цвет текста кнопок */
+            background-color: yellow; /* Жёлтый фон кнопок */
+            padding: 8px 15px; /* Внутренние отступы кнопок */
+            border-radius: 5px; /* Скругление углов */
+            font-weight: bold; /* Жирный шрифт */
+            transition: background-color 0.3s, transform 0.2s; /* Плавные переходы */
+        }
+
+        .social-buttons a:hover {
+            background-color: #ff0; /* Более яркий жёлтый при наведении */
+            transform: scale(1.05); /* Небольшое увеличение при наведении */
         }
 
         .schedule-weather-container {
@@ -307,39 +364,6 @@
             opacity: 0.9;
         }
 
-        .flash-container {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            z-index: 10000;
-            max-width: 300px;
-        }
-
-        .flash-message {
-            padding: 15px 35px 15px 20px;
-            margin-bottom: 10px;
-            border-radius: 5px;
-            position: relative;
-            animation: slideIn 0.3s ease-out;
-            opacity: 0.95;
-        }
-
-        .flash-message.success {
-            background: #d4edda;
-            color: #155724;
-            border: 1px solid #c3e6cb;
-        }
-
-        .close-flash {
-            position: absolute;
-            right: 10px;
-            top: 50%;
-            transform: translateY(-50%);
-            cursor: pointer;
-            font-size: 20px;
-            color: inherit;
-        }
-
         @keyframes slideIn {
             from { transform: translateX(100%); }
             to { transform: translateX(0); }
@@ -368,8 +392,20 @@
                 align-items: flex-start;
             }
             .site-footer {
-                height: auto;
-                padding: 20px 15px;
+                position: fixed;
+                bottom: -100px;
+                left: 0;
+                right: 0;
+                background: rgba(255, 255, 255, 0.9);
+                padding: 15px 20px;
+                border-top: 2px solid #333;
+                z-index: 100;
+                backdrop-filter: blur(5px);
+                transition: bottom 0.3s ease;
+            }
+
+            .site-footer.visible {
+                bottom: 0;
             }
             .schedule-button {
                 margin-left: 0;
@@ -411,18 +447,16 @@
         </div>
     </div>
 </div>
-
     <div class="text-content1">
         <h1>Велоклуб "Сотня"</h1>
     </div>
 
     <div class="text-content2">
         <h2>Немного о нас:</h2>
-        <p><strong>Команда:</strong> Велоклуб "СОТНЯ" — это сообщество единомышленников, для которых велосипед стал не просто транспортом, а стилем жизни. Мы объединяем любителей скорости, адреналина и преодоления себя. Название "СОТНЯ" символизирует наши цели: стремление к 100% самоотдаче, заезды на 100+ километров и создание команды, где каждый участник — важная часть целого.</p>
-        <p><strong>Дистанции:</strong> 200, 300, 400 и даже 600км</p>
-        <p><strong>Маршрут:</strong> Городская площадь — Лесная тропа — Горное плато</p>
+        <p><strong>"СОТНЯ"</strong> — это Клуб рандоннеров, отчаянных велосипедистов-марафонцев.</p>
+        <p><strong>Дистанции:</strong> 200, 300, 400, 600, 1000км</p>
         <div style="display: flex; justify-content: space-between; align-items: center;">
-            <h3>Присоединяйтесь к нашим экстремальным заездам!</h3>
+            <h3>Присоединяйтесь к нашим заездам!</h3>
             <button class="schedule-button" id="scheduleButton">Расписание</button>
         </div>
     </div>
@@ -445,233 +479,112 @@
         <img src="/static/zaezd.jpg" alt="Расписание заездов" class="schedule-image">
     </div>
 
-    <footer class="site-footer">
+    <div class="photo-album">
+        <h2>Фотоальбом</h2>
+        <div class="photo-gallery">
+            {% if photos %}
+                {% for photo in photos %}
+                    <div class="photo-item">
+                        <img src="{{ url_for('static', filename='thumbnails/' + photo.thumbnail_filename) }}" alt="Миниатюра фото">
+                    </div>
+                {% endfor %}
+            {% else %}
+                <p>Нет фотографий.</p>
+            {% endif %}
+        </div>
+
+        {% if 'username' in session %}
+            <a href="{{ url_for('upload_photo') }}" class="upload-button">Добавить фото</a>
+        {% endif %}
+
+        <a href="{{ url_for('album') }}" class="view-album-button">Посмотреть альбом</a>
+    </div>
+
+    <footer class="site-footer" id="siteFooter">
         <div class="footer-content">
-            <div class="contacts">
-                <h3>Контакты организаторов:</h3>
-                <div class="contact-line">
-                    <p class="contact-phone">📞 +7 (999) 123-45-67</p>
-                    <p class="contact-email">📧 velo@sotnya.ru</p>
-                </div>
-            </div>
             <div class="social-links">
-                <a href="https://vk.com/centaine" target="_blank">🔗 ВКонтакте</a>
+                <h3>Социальные сети клуба:</h3>
+                <div class="social-buttons">
+                    <a href="https://vk.com/centaine " target="_blank">🔗 ВКонтакте</a>
+                    <a href="https://t.me/centaine43/2 " target="_blank">💬 Telegram-чат</a>
+                </div>
             </div>
         </div>
     </footer>
-
     <script>
-        const registrationButton = document.getElementById('registrationButton');
-        const dialogBox = document.getElementById('dialogBox');
-        const dialogOverlay = document.getElementById('dialogOverlay');
-        const closeDialog = document.getElementById('closeDialog');
-        const scheduleButton = document.getElementById('scheduleButton');
-        const scheduleDialog = document.getElementById('scheduleDialog');
+        document.addEventListener('DOMContentLoaded', () => {
+            const registrationButton = document.getElementById('registrationButton');
+            const dialogBox = document.getElementById('dialogBox');
+            const dialogOverlay = document.getElementById('dialogOverlay');
+            const closeDialog = document.getElementById('closeDialog');
+            const scheduleButton = document.getElementById('scheduleButton');
+            const scheduleDialog = document.getElementById('scheduleDialog');
+            const scheduleOverlay = document.getElementById('scheduleOverlay');
+
+            // Обработчики для регистрации
+            if (registrationButton && dialogBox && dialogOverlay && closeDialog) {
+                registrationButton.addEventListener('click', () => {
+                    dialogOverlay.style.display = 'block';
+                    dialogBox.style.display = 'block';
+                });
+
+                closeDialog.addEventListener('click', () => {
+                    dialogOverlay.style.display = 'none';
+                    dialogBox.style.display = 'none';
+                });
+
+                dialogOverlay.addEventListener('click', () => {
+                    dialogOverlay.style.display = 'none';
+                    dialogBox.style.display = 'none';
+                });
+            }
+
+            // Обработчики для расписания
+            if (scheduleButton && scheduleDialog && scheduleOverlay) {
+                function closeSchedule() {
+                    scheduleOverlay.style.display = 'none';
+                    scheduleDialog.style.display = 'none';
+                }
+
+                scheduleButton.addEventListener('click', () => {
+                    scheduleOverlay.style.display = 'block';
+                    scheduleDialog.style.display = 'block';
+                });
+
+                scheduleOverlay.addEventListener('click', closeSchedule);
+            } else {
+                console.error('Элементы расписания не найдены!');
+            }
+        });
+    function closeSchedule() {
         const scheduleOverlay = document.getElementById('scheduleOverlay');
-
-        // Обработчики для регистрации
-        registrationButton.addEventListener('click', () => {
-            dialogOverlay.style.display = 'block';
-            dialogBox.style.display = 'block';
-        });
-
-        closeDialog.addEventListener('click', () => {
-            dialogOverlay.style.display = 'none';
-            dialogBox.style.display = 'none';
-        });
-
-        dialogOverlay.addEventListener('click', () => {
-            dialogOverlay.style.display = 'none';
-            dialogBox.style.display = 'none';
-        });
-
-        // Обработчики для расписания
-        function closeSchedule() {
-            scheduleOverlay.style.display = 'none';
-            scheduleDialog.style.display = 'none';
-        }
-
-        scheduleButton.addEventListener('click', () => {
-            scheduleOverlay.style.display = 'block';
-            scheduleDialog.style.display = 'block';
-        });
-
-        scheduleOverlay.addEventListener('click', closeSchedule);
+        const scheduleDialog = document.getElementById('scheduleDialog');
+        scheduleOverlay.style.display = 'none';
+        scheduleDialog.style.display = 'none';
+    }
     </script>
 <script>
     async function fetchWeather() {
         const apiKey = '6ea99a2ec083343778562fec4023b8a2';
         let city;
 
-        // Словарь для перевода русских названий на английские
-        const cityTranslations = {
-    // Регионы
-    'Архангельская обл': 'Arkhangelsk Oblast',
-    'Астраханская обл': 'Astrakhan Oblast',
-    'Белгородская обл': 'Belgorod Oblast',
-    'Брянская обл': 'Bryansk Oblast',
-    'Владимирская обл': 'Vladimir Oblast',
-    'Волгоградская обл': 'Volgograd Oblast',
-    'Вологодская обл': 'Vologda Oblast',
-    'Воронежская обл': 'Voronezh Oblast',
-    'Еврейская Аобл': 'Jewish Autonomous Oblast',
-    'Ивановская обл': 'Ivanovo Oblast',
-    'Иркутская обл': 'Irkutsk Oblast',
-    'Калининградская обл': 'Kaliningrad Oblast',
-    'Калужская обл': 'Kaluga Oblast',
-    'Кемеровская область - Кузбасс': 'Kemerovo Oblast - Kuzbass',
-    'Кировская обл': 'Kirov Oblast',
-    'Костромская обл': 'Kostroma Oblast',
-    'Краснодарский край': 'Krasnodar Krai',
-    'Красноярский край': 'Krasnoyarsk Krai',
-    'Курганская обл': 'Kurgan Oblast',
-    'Курская обл': 'Kursk Oblast',
-    'Ленинградская обл': 'Leningrad Oblast',
-    'Липецкая обл': 'Lipetsk Oblast',
-    'Магаданская обл': 'Magadan Oblast',
-    'Московская обл': 'Moscow Oblast',
-    'Мурманская обл': 'Murmansk Oblast',
-    'Нижегородская обл': 'Nizhny Novgorod Oblast',
-    'Новгородская обл': 'Novgorod Oblast',
-    'Новосибирская обл': 'Novosibirsk Oblast',
-    'Омская обл': 'Omsk Oblast',
-    'Оренбургская обл': 'Orenburg Oblast',
-    'Орловская обл': 'Oryol Oblast',
-    'Пензенская обл': 'Penza Oblast',
-    'Псковская обл': 'Pskov Oblast',
-    'Респ Адыгея': 'Republic of Adygea',
-    'Респ Башкортостан': 'Republic of Bashkortostan',
-    'Респ Бурятия': 'Republic of Buryatia',
-    'Респ Дагестан': 'Republic of Dagestan',
-    'Респ Ингушетия': 'Republic of Ingushetia',
-    'Респ Кабардино-Балкарская': 'Kabardino-Balkarian Republic',
-    'Респ Калмыкия': 'Republic of Kalmykia',
-    'Респ Карачаево-Черкесская': 'Karachay-Cherkess Republic',
-    'Респ Карелия': 'Republic of Karelia',
-    'Респ Коми': 'Komi Republic',
-    'Респ Крым': 'Republic of Crimea',
-    'Респ Марий Эл': 'Mari El Republic',
-    'Респ Мордовия': 'Republic of Mordovia',
-    'Респ Саха': 'Sakha Republic (Yakutia)',
-    'Респ Северная Осетия - Алания': 'Republic of North Ossetia-Alania',
-    'Респ Татарстан': 'Republic of Tatarstan',
-    'Респ Тыва': 'Tyva Republic',
-    'Респ Удмуртская': 'Udmurt Republic',
-    'Респ Хакасия': 'Republic of Khakassia',
-    'Респ Чеченская': 'Chechen Republic',
-    'Ростовская обл': 'Rostov Oblast',
-    'Рязанская обл': 'Ryazan Oblast',
-    'Самарская обл': 'Samara Oblast',
-    'Саратовская обл': 'Saratov Oblast',
-    'Сахалинская обл': 'Sakhalin Oblast',
-    'Свердловская обл': 'Sverdlovsk Oblast',
-    'Смоленская обл': 'Smolensk Oblast',
-    'Тамбовская обл': 'Tambov Oblast',
-    'Тверская обл': 'Tver Oblast',
-    'Томская обл': 'Tomsk Oblast',
-    'Тульская обл': 'Tula Oblast',
-    'Тюменская обл': 'Tyumen Oblast',
-    'Ульяновская обл': 'Ulyanovsk Oblast',
-    'Ханты-Мансийский Автономный округ - Югра АО': 'Khanty-Mansi Autonomous Okrug - Yugra',
-    'Челябинская обл': 'Chelyabinsk Oblast',
-    'Чувашская Республика - Чувашия': 'Chuvash Republic',
-    'Чукотский АО': 'Chukotka Autonomous Okrug',
-    'Ямало-Ненецкий АО': 'Yamalo-Nenets Autonomous Okrug',
-    'Ярославская обл': 'Yaroslavl Oblast',
+        // Загрузка списка городов из JSON-файла
+        const cityTranslations = await fetch('/static/cities.json')
+            .then(response => response.json())
+            .catch(error => {
+                console.error('Ошибка загрузки cities.json:', error);
+                return {};
+            });
 
-    // Города
-    'Абакан': 'Abakan',
-    'Анадырь': 'Anadyr',
-    'Архангельск': 'Arkhangelsk',
-    'Астрахань': 'Astrakhan',
-    'Барнаул': 'Barnaul',
-    'Белгород': 'Belgorod',
-    'Биробиджан': 'Birobidzhan',
-    'Благовещенск': 'Blagoveshchensk',
-    'Брянск': 'Bryansk',
-    'Великий Новгород': 'Veliky Novgorod',
-    'Владивосток': 'Vladivostok',
-    'Владикавказ': 'Vladikavkaz',
-    'Владимир': 'Vladimir',
-    'Волгоград': 'Volgograd',
-    'Вологда': 'Vologda',
-    'Воронеж': 'Voronezh',
-    'Горно-Алтайск': 'Gorno-Altaysk',
-    'Грозный': 'Grozny',
-    'Екатеринбург': 'Yekaterinburg',
-    'Иваново': 'Ivanovo',
-    'Ижевск': 'Izhevsk',
-    'Иркутск': 'Irkutsk',
-    'Йошкар-Ола': 'Yoshkar-Ola',
-    'Казань': 'Kazan',
-    'Калининград': 'Kaliningrad',
-    'Калуга': 'Kaluga',
-    'Кемерово': 'Kemerovo',
-    'Киров': 'Kirov',
-    'Кострома': 'Kostroma',
-    'Краснодар': 'Krasnodar',
-    'Красноярск': 'Krasnoyarsk',
-    'Курган': 'Kurgan',
-    'Курск': 'Kursk',
-    'Кызыл': 'Kyzyl',
-    'Липецк': 'Lipetsk',
-    'Магадан': 'Magadan',
-    'Магас': 'Magas',
-    'Майкоп': 'Maykop',
-    'Махачкала': 'Makhachkala',
-    'Москва': 'Moscow',
-    'Мурманск': 'Murmansk',
-    'Нальчик': 'Nalchik',
-    'Нарьян-Мар': 'Naryan-Mar',
-    'Нижний Новгород': 'Nizhny Novgorod',
-    'Новосибирск': 'Novosibirsk',
-    'Омск': 'Omsk',
-    'Оренбург': 'Orenburg',
-    'Орёл': 'Oryol',
-    'Пенза': 'Penza',
-    'Пермь': 'Perm',
-    'Петрозаводск': 'Petrozavodsk',
-    'Петропавловск-Камчатский': 'Petropavlovsk-Kamchatsky',
-    'Псков': 'Pskov',
-    'Ростов-на-Дону': 'Rostov-on-Don',
-    'Рязань': 'Ryazan',
-    'Салехард': 'Salekhard',
-    'Самара': 'Samara',
-    'Санкт-Петербург': 'Saint Petersburg',
-    'Саранск': 'Saransk',
-    'Саратов': 'Saratov',
-    'Севастополь': 'Sevastopol',
-    'Смоленск': 'Smolensk',
-    'Ставрополь': 'Stavropol',
-    'Сыктывкар': 'Syktyvkar',
-    'Тамбов': 'Tambov',
-    'Тверь': 'Tver',
-    'Томск': 'Tomsk',
-    'Тула': 'Tula',
-    'Тюмень': 'Tyumen',
-    'Улан-Удэ': 'Ulan-Ude',
-    'Ульяновск': 'Ulyanovsk',
-    'Уфа': 'Ufa',
-    'Хабаровск': 'Khabarovsk',
-    'Ханты-Мансийск': 'Khanty-Mansiysk',
-    'Чебоксары': 'Cheboksary',
-    'Челябинск': 'Chelyabinsk',
-    'Черкесск': 'Cherkessk',
-    'Чита': 'Chita',
-    'Элиста': 'Elista',
-    'Южно-Сахалинск': 'Yuzhno-Sakhalinsk',
-    'Якутск': 'Yakutsk',
-    'Ярославль': 'Yaroslavl'
-};
-
+        // Получение города пользователя
         {% if user and user.city %}
             const russianCity = '{{ user.city }}'.trim();
-            city = encodeURIComponent(cityTranslations[russianCity]);
+            city = encodeURIComponent(cityTranslations[russianCity] || 'Kirov');
         {% else %}
             city = 'Kirov';
         {% endif %}
 
-        const url = `https://api.openweathermap.org/data/2.5/weather?q=${encodeURIComponent(city)}&units=metric&appid=${apiKey}&lang=ru`;
+        const url = `https://api.openweathermap.org/data/2.5/weather?q= ${city}&units=metric&appid=${apiKey}&lang=ru`;
 
         try {
             const response = await fetch(url);
@@ -687,7 +600,7 @@
 
             const iconCode = data.weather[0].icon;
             document.getElementById('weatherIcon').src =
-                `https://openweathermap.org/img/wn/${iconCode}@2x.png`;
+                `https://openweathermap.org/img/wn/ ${iconCode}@2x.png`;
 
         } catch (error) {
             console.error('Ошибка погоды:', error);
@@ -697,7 +610,21 @@
                 </div>`;
         }
     }
+
     window.addEventListener('DOMContentLoaded', fetchWeather);
+</script>
+<script>
+    document.addEventListener('scroll', () => {
+        const footer = document.getElementById('siteFooter');
+        const scrollPosition = window.scrollY + window.innerHeight;
+        const pageHeight = document.documentElement.scrollHeight;
+
+        if (scrollPosition >= pageHeight) {
+            footer.classList.add('visible');
+        } else {
+            footer.classList.remove('visible');
+        }
+    });
 </script>
 </body>
 </html>

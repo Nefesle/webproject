@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Загрузка фото | Велоклуб "Сотня"</title>
+    <link rel="stylesheet" type="text/css" href="/static/styles.css">
+    <style>
+        /* Общие стили */
+        body {
+            height: 100%;
+            overflow: hidden;
+            margin: 0;
+            padding: 0;
+            background-image: url('/static/background_base.jpg');
+            background-size: cover;
+            background-position: center 15%;
+            background-repeat: no-repeat;
+            background-color: rgba(255, 255, 255, 0.5);
+            background-blend-mode: lighten;
+            color: #fff !important;
+            font-family: sans-serif;
+            position: relative;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+            min-height: 100vh;
+        }
+
+        /* Контейнер для формы загрузки */
+        .upload-photo-container {
+            margin-top: 20px;
+            padding: 30px;
+            background-color: rgba(0, 0, 0, 0.6);
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            max-width: 500px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        /* Заголовок */
+        h1 {
+            text-align: center;
+            font-size: 24px;
+            color: #e9b50b;
+            margin-bottom: 20px;
+        }
+
+        /* Группа элементов формы */
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-size: 16px;
+            color: #e9b50b;
+        }
+
+        .form-group input[type="file"] {
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            background-color: rgba(255, 255, 255, 0.8);
+        }
+
+        .form-group input[type="checkbox"] {
+            margin-right: 10px;
+        }
+
+        /* Кнопка загрузки */
+        .submit-button {
+            width: 100%;
+            padding: 12px;
+            background-color: #e9b50b;
+            color: #000;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+
+        .submit-button:hover {
+            background-color: #d8a50b;
+        }
+
+        /* Кнопка "На главную" */
+        .home-button-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 10;
+        }
+
+        .home-button {
+            padding: 12px 20px;
+            background: #e9b50b;
+            color: #000 !important;
+            text-decoration: none;
+            border: 2px solid #000;
+            border-radius: 4px;
+            font-weight: bold;
+            transition: background 0.3s;
+        }
+
+        .home-button:hover {
+            background: #d8a50b;
+        }
+    </style>
+</head>
+<body>
+    <!-- Кнопка "На главную" -->
+    <div class="home-button-container">
+        <a href="/" class="home-button">← На главную</a>
+    </div>
+
+    <!-- Форма загрузки фотографии -->
+    <div class="upload-photo-container">
+        <h1>Загрузка фотографии</h1>
+        <form method="POST" enctype="multipart/form-data">
+            {{ form.hidden_tag() }}
+            <div class="form-group">
+                {{ form.photo.label }}<br>
+                {{ form.photo }}
+            </div>
+            <div class="form-group">
+                {{ form.anonymous.label }}
+                {{ form.anonymous }}
+            </div>
+            <button type="submit" class="submit-button">Загрузить</button>
+        </form>
+    </div>
+</body>
+</html>

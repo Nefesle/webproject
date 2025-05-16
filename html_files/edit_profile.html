@@ -88,24 +88,37 @@
         }
 
         .flash-messages {
-            margin-bottom: 15px;
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            opacity: 1;
+            animation: fadeOut 5s ease-out forwards;
         }
 
         .flash {
-            padding: 10px;
+            padding: 10px 20px;
             border-radius: 5px;
+            color: #fff;
+            font-size: 14px;
+            text-align: center;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         }
 
         .flash.success {
             background-color: #d4edda;
-            color: #155724;
             border: 1px solid #c3e6cb;
+            color: #155724;
         }
 
         .flash.error {
             background-color: #f8d7da;
-            color: #721c24;
             border: 1px solid #f5c6cb;
+            color: #721c24;
         }
 
                 .home-button-container {
@@ -133,6 +146,16 @@
         .submit-button:hover, .home-button:hover {
             background-color: #d8a50b;
         }
+
+        @keyframes fadeOut {
+            0% {
+                opacity: 1;
+            }
+            100% {
+                opacity: 0;
+                visibility: hidden;
+            }
+        }
     </style>
 </head>
 <body>
@@ -141,13 +164,9 @@
         <a href="{{ url_for('profile') }}" class="home-button">← В профиль</a>
     </div>
 
-    <div class="container">
-        <h1>Редактировать профиль</h1>
-
-        <!-- Отображение flash-сообщений -->
         {% with messages = get_flashed_messages(with_categories=true) %}
             {% if messages %}
-                <div class="flash-messages">
+                <div id="flash-messages" class="flash-messages">
                     {% for category, message in messages %}
                         <div class="flash {{ category }}">{{ message }}</div>
                     {% endfor %}
@@ -155,7 +174,8 @@
             {% endif %}
         {% endwith %}
 
-        <!-- Форма редактирования профиля -->
+    <div class="container">
+        <h1>Редактировать профиль</h1>
         <form action="{{ url_for('edit_profile') }}" method="POST">
             <!-- Никнейм -->
             <div class="form-group">
@@ -178,7 +198,6 @@
             <!-- Кнопка отправки -->
             <button type="submit" class="submit-button">Сохранить изменения</button>
         </form>
-
     </div>
 </body>
 </html>

@@ -83,6 +83,40 @@
             color: #aaa;
         }
 
+        .flash-messages {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            opacity: 1;
+            animation: fadeOut 2s ease-out forwards;
+        }
+
+        .flash {
+            padding: 10px 20px;
+            border-radius: 5px;
+            color: #fff;
+            font-size: 14px;
+            text-align: center;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .flash.success {
+            background-color: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+        }
+
+        .flash.error {
+            background-color: #f8d7da;
+            border: 1px solid #f5c6cb;
+            color: #721c24;
+        }
+
         .submit-button {
             width: 100%;
             padding: 12px;
@@ -134,6 +168,16 @@
             transition: background-color 0.3s;
             margin-top: 10px;
         }
+
+        @keyframes fadeOut {
+            0% {
+                opacity: 1;
+            }
+            100% {
+                opacity: 0;
+                visibility: hidden;
+            }
+        }
     </style>
 </head>
 <body>
@@ -145,7 +189,7 @@
     <div class="login-container">
             {% with messages = get_flashed_messages(with_categories=true) %}
                 {% if messages %}
-                    <div class="flash-messages">
+                    <div id="flash-messages" class="flash-messages">
                         {% for category, message in messages %}
                             <div class="flash {{ category }}">{{ message }}</div>
                         {% endfor %}
@@ -174,5 +218,16 @@
         <!-- Ссылка на страницу регистрации -->
         <a href="/registration" class="registration-link">Ещё не зарегистрированы? Зарегистрироваться</a>
     </div>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const flashMessages = document.getElementById('flash-messages');
+        if (flashMessages) {
+            setTimeout(() => {
+                flashMessages.style.display = 'none';
+            }, 2000);
+        }
+    });
+</script>
 </body>
 </html>
